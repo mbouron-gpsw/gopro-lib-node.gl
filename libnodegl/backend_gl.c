@@ -337,6 +337,12 @@ static int gl_configure(struct ngl_ctx *s, const struct ngl_config *config)
     return 0;
 }
 
+static int gl_version(struct ngl_ctx *s)
+{
+    struct glcontext *gl = s->glcontext;
+    return gl->version;
+}
+
 static int gl_resize(struct ngl_ctx *s, int width, int height, const int *viewport)
 {
     struct glcontext *gl = s->glcontext;
@@ -403,6 +409,7 @@ static void gl_destroy(struct ngl_ctx *s)
 const struct backend ngli_backend_gl = {
     .name         = "OpenGL",
     .configure    = gl_configure,
+    .version      = gl_version,
     .resize       = gl_resize,
     .pre_draw     = gl_pre_draw,
     .post_draw    = gl_post_draw,
@@ -412,6 +419,7 @@ const struct backend ngli_backend_gl = {
 const struct backend ngli_backend_gles = {
     .name         = "OpenGL ES",
     .configure    = gl_configure,
+    .version      = gl_version,
     .resize       = gl_resize,
     .pre_draw     = gl_pre_draw,
     .post_draw    = gl_post_draw,

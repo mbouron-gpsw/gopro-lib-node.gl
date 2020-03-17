@@ -360,6 +360,19 @@ struct ngl_config {
                                 bytes. */
 };
 
+struct ngl_backend {
+    const char *name;
+    int id;
+    int version;
+};
+
+/**
+ * Returns the available backends
+ *
+ * @return the available node.gl backends
+ */
+int ngl_get_available_backends(int *nb_backends, struct ngl_backend **backends);
+
 /**
  * Opaque structure identifying a node.gl context
  */

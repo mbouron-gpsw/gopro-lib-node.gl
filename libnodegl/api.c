@@ -124,6 +124,14 @@ static int cmd_configure(struct ngl_ctx *s, void *arg)
     return 0;
 }
 
+static int cmd_version(struct ngl_ctx *s, void *arg)
+{
+    if (!s->backend)
+        return NGL_ERROR_INVALID_USAGE;
+
+    return s->backend->version(s);
+}
+
 struct resize_params {
     int width;
     int height;
@@ -297,6 +305,63 @@ static void stop_thread(struct ngl_ctx *s)
     pthread_cond_destroy(&s->cond_ctl);
     pthread_cond_destroy(&s->cond_wkr);
     pthread_mutex_destroy(&s->lock);
+}
+
+int ngl_get_available_backends(int *nb_backendsp, struct ngl_backend **backendsp)
+{
+    struct ngl_ctx *s = ngl_create();
+    if (!s)
+        return NGL_ERROR_MEMORY;
+
+    static const struct {
+        int backend;
+        char name[16];
+    } backends_map[] = {
+        {NGL_BACKEND_OPENGL,   "opengl"},
+        {NGL_BACKEND_OPENGLES, "opengles"},
+    };
+
+    int ret;
+    struct ngl_backend *backends = calloc(NGLI_ARRAY_NB(backends_map), sizeof(*backends));
+    if (!backends) {
+        ret = NGL_ERROR_MEMORY;
+        goto fail;
+    }
+    int nb_backends = 0;
+
+    for (int i = 0; i < NGLI_ARRAY_NB(backends_map); i++) {
+        struct ngl_config config = {
+            .backend   = backends_map[i].backend,
+            .offscreen = 1,
+            .width     = 1,
+            .height    = 1,
+        };
+        ret = dispatch_cmd(s, cmd_configure, &config);
+        if (ret < 0)
+            continue;
+        ret = dispatch_cmd(s, cmd_version, NULL);
+        if (ret < 0)
+            goto fail;
+        struct ngl_backend *backend = &backends[nb_backends++];
+        backend->name = backends_map[i].name;
+        backend->backend = backends_map[i].backend;
+        backend->version = ret;
+    }
+
+    if (!nb_backends) {
+        free(backends);
+        backends = NULL;
+    }
+
+    *backendsp = backends;
+    *nb_backendsp = nb_backends;
+    ngl_freep(&s);
+    return 0;
+
+fail:
+    free(backends);
+    ngl_freep(&s);
+    return ret;
 }
 
 struct ngl_ctx *ngl_create(void)
