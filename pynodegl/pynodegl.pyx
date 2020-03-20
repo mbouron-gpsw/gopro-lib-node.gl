@@ -60,7 +60,7 @@ cdef extern from "nodegl.h":
     cdef int NGL_BACKEND_OPENGLES
 
     cdef struct ngl_backend:
-        int backend
+        int id
         const char *name
         int version
 
@@ -83,7 +83,7 @@ cdef extern from "nodegl.h":
         uint8_t *capture_buffer
 
     ngl_ctx *ngl_create()
-    int ngl_get_available_backends(int *nb_backendsp, ngl_backend **backendsp)
+    int ngl_probe_backends(int backend_id, int *nb_backendsp, ngl_backend **backendsp)
     int ngl_configure(ngl_ctx *s, ngl_config *config)
     int ngl_resize(ngl_ctx *s, int width, int height, const int *viewport);
     int ngl_set_scene(ngl_ctx *s, ngl_node *scene)
@@ -176,24 +176,24 @@ cdef class Viewer:
         if self.ctx is NULL:
             raise MemoryError()
 
-
-    def get_available_backends(self):
+    @staticmethod
+    def probe_backends(backend_id=BACKEND_AUTO):
         cdef ngl_backend *backend = NULL
         cdef ngl_backend *backends = NULL
         cdef int nb_backends = 0
-        cdef int ret = ngl_get_available_backends(&nb_backends, &backends)
+        cdef int ret = ngl_probe_backends(backend_id, &nb_backends, &backends)
         if ret < 0:
-            raise Exception("Error getting available backends")
-        backend_map = dict()
+            raise Exception("Error probing backends")
+        backend_set = list()
         for i in range(nb_backends):
             backend = &backends[i]
-            backend_map[backend.name] = dict(
+            backend_set.append(dict(
+                id=backend.id,
                 name=backend.name,
-                backend=backend.backend,
                 version=backend.version
-            )
+            ))
         free(backends)
-        return backend_map
+        return backend_set
 
 
     def configure(self, **kwargs):

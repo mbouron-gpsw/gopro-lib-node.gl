@@ -307,31 +307,33 @@ static void stop_thread(struct ngl_ctx *s)
     pthread_mutex_destroy(&s->lock);
 }
 
-int ngl_get_available_backends(int *nb_backendsp, struct ngl_backend **backendsp)
+int ngl_probe_backends(int backend_id, int *nb_backendsp, struct ngl_backend **backendsp)
 {
     struct ngl_ctx *s = ngl_create();
     if (!s)
         return NGL_ERROR_MEMORY;
 
     static const struct {
-        int backend;
+        int id;
         char name[16];
-    } backends_map[] = {
-        {NGL_BACKEND_OPENGL,   "opengl"},
-        {NGL_BACKEND_OPENGLES, "opengles"},
+    } map[] = {
+        {NGL_BACKEND_OPENGL,   "OpenGL"},
+        {NGL_BACKEND_OPENGLES, "OpenGL ES"},
     };
 
     int ret;
-    struct ngl_backend *backends = calloc(NGLI_ARRAY_NB(backends_map), sizeof(*backends));
+    struct ngl_backend *backends = calloc(NGLI_ARRAY_NB(map), sizeof(*backends));
     if (!backends) {
         ret = NGL_ERROR_MEMORY;
         goto fail;
     }
     int nb_backends = 0;
 
-    for (int i = 0; i < NGLI_ARRAY_NB(backends_map); i++) {
+    for (int i = 0; i < NGLI_ARRAY_NB(map); i++) {
+        if (backend_id != NGL_BACKEND_AUTO && backend_id != map[i].id)
+            continue;
         struct ngl_config config = {
-            .backend   = backends_map[i].backend,
+            .backend   = map[i].id,
             .offscreen = 1,
             .width     = 1,
             .height    = 1,
@@ -343,8 +345,8 @@ int ngl_get_available_backends(int *nb_backendsp, struct ngl_backend **backendsp
         if (ret < 0)
             goto fail;
         struct ngl_backend *backend = &backends[nb_backends++];
-        backend->name = backends_map[i].name;
-        backend->backend = backends_map[i].backend;
+        backend->id = map[i].id;
+        backend->name = map[i].name;
         backend->version = ret;
     }
 
