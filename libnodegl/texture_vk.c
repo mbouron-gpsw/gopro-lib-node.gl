@@ -269,6 +269,8 @@ int ngli_texture_vk_init(struct texture *s,
     /* FIXME */
     transition_image_layout(s, s_priv->image, s_priv->format, s_priv->image_layout, VK_IMAGE_LAYOUT_GENERAL);
 
+    s_priv->mipmap_levels = 1;
+
     VkImageViewCreateInfo view_info = {
         .sType = VK_STRUCTURE_TYPE_IMAGE_VIEW_CREATE_INFO,
         .image = s_priv->image,

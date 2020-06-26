@@ -348,6 +348,13 @@ static VkResult create_vulkan_instance(struct vkcontext *vk)
     const char *my_extension_names[] = {
         VK_KHR_SURFACE_EXTENSION_NAME,
         surface_ext_name,
+#ifdef VK_USE_PLATFORM_MACOS_MVK
+        "VK_MVK_moltenvk",
+        "VK_MVK_macos_surface",
+        "VK_EXT_metal_surface",
+        //"VK_EXT_debug_report",
+        //"VK_EXT_debug_utils",
+#endif
 #if ENABLE_DEBUG
         VK_EXT_DEBUG_UTILS_EXTENSION_NAME,
 #endif
