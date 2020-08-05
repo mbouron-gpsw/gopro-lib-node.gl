@@ -407,6 +407,12 @@ static int gl_init(struct gctx *s)
         LOG(WARNING, "could not initialize vaapi");
 #endif
 
+#if defined(TARGET_ANDROID)
+    ret = ngli_android_api_init(&s->ctx->android_api);
+    if (ret < 0)
+        LOG(WARNING, "could not initialize Android API");
+#endif
+
     return 0;
 }
 
