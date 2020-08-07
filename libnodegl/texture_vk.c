@@ -147,30 +147,30 @@ static VkResult create_buffer(struct vkcontext *vk, VkDeviceSize size, VkBufferU
         .sharingMode = VK_SHARING_MODE_EXCLUSIVE,
     };
 
-    VkResult ret = vkCreateBuffer(vk->device, &buffer_create_info, NULL, buffer);
-    if (ret != VK_SUCCESS)
-        return ret;
+    VkResult res = vkCreateBuffer(vk->device, &buffer_create_info, NULL, buffer);
+    if (res != VK_SUCCESS)
+        return res;
 
-    VkMemoryRequirements mem_requirements;
-    vkGetBufferMemoryRequirements(vk->device, *buffer, &mem_requirements);
+    VkMemoryRequirements requirements;
+    vkGetBufferMemoryRequirements(vk->device, *buffer, &requirements);
 
-    int memory_index = ngli_vkcontext_find_memory_type(vk, mem_requirements.memoryTypeBits, properties);
+    int memory_index = ngli_vkcontext_find_memory_type(vk, requirements.memoryTypeBits, properties);
     if (memory_index < 0)
         return -1;
 
     VkMemoryAllocateInfo memory_allocate_info = {
         .sType = VK_STRUCTURE_TYPE_MEMORY_ALLOCATE_INFO,
-        .allocationSize = mem_requirements.size,
+        .allocationSize = requirements.size,
         .memoryTypeIndex = memory_index,
     };
 
-    ret = vkAllocateMemory(vk->device, &memory_allocate_info, NULL, memory);
-    if (ret != VK_SUCCESS)
-        return ret;
+    res = vkAllocateMemory(vk->device, &memory_allocate_info, NULL, memory);
+    if (res != VK_SUCCESS)
+        return res;
 
-    ret = vkBindBufferMemory(vk->device, *buffer, *memory, 0);
-    if (ret != VK_SUCCESS)
-        return ret;
+    res = vkBindBufferMemory(vk->device, *buffer, *memory, 0);
+    if (res != VK_SUCCESS)
+        return res;
 
     return VK_SUCCESS;
 }
