@@ -72,6 +72,9 @@ static const struct param_choices access_choices = {
     }
 };
 
+#define NGLI_FORMAT_DEPTH         (NGLI_FORMAT_NB + 1)
+#define NGLI_FORMAT_DEPTH_STENCIL (NGLI_FORMAT_NB + 2)
+
 static const struct param_choices format_choices = {
     .name = "format",
     .consts = {
@@ -128,6 +131,8 @@ static const struct param_choices format_choices = {
                                                                                        "float depth component + 8-bit unsigned integer "
                                                                                        "stencil component + 24-bit of unused data")},
         {"s8_uint",              NGLI_FORMAT_S8_UINT,             .desc=NGLI_DOCSTRING("8-bit unsigned integer stencil component")},
+        {"depth",                NGLI_FORMAT_DEPTH,               .desc=NGLI_DOCSTRING("preferred depth format")},
+        {"depth_stencil",        NGLI_FORMAT_DEPTH_STENCIL,       .desc=NGLI_DOCSTRING("preferred depth + stencil format")},
         {NULL}
     }
 };
@@ -169,7 +174,7 @@ static const struct param_choices format_choices = {
 
 #define OFFSET(x) offsetof(struct texture_priv, x)
 static const struct node_param texture2d_params[] = {
-    {"format", PARAM_TYPE_SELECT, OFFSET(params.format), {.i64=NGLI_FORMAT_R8G8B8A8_UNORM}, .choices=&format_choices,
+    {"format", PARAM_TYPE_SELECT, OFFSET(format), {.i64=NGLI_FORMAT_R8G8B8A8_UNORM}, .choices=&format_choices,
                .desc=NGLI_DOCSTRING("format of the pixel data")},
     {"width", PARAM_TYPE_INT, OFFSET(params.width), {.i64=0},
               .desc=NGLI_DOCSTRING("width of the texture")},
@@ -196,7 +201,7 @@ static const struct node_param texture2d_params[] = {
 };
 
 static const struct node_param texture3d_params[] = {
-    {"format", PARAM_TYPE_SELECT, OFFSET(params.format), {.i64=NGLI_FORMAT_R8G8B8A8_UNORM}, .choices=&format_choices,
+    {"format", PARAM_TYPE_SELECT, OFFSET(format), {.i64=NGLI_FORMAT_R8G8B8A8_UNORM}, .choices=&format_choices,
                .desc=NGLI_DOCSTRING("format of the pixel data")},
     {"width", PARAM_TYPE_INT, OFFSET(params.width), {.i64=0},
               .desc=NGLI_DOCSTRING("width of the texture")},
@@ -225,7 +230,7 @@ static const struct node_param texture3d_params[] = {
 };
 
 static const struct node_param texturecube_params[] = {
-    {"format", PARAM_TYPE_SELECT, OFFSET(params.format), {.i64=NGLI_FORMAT_R8G8B8A8_UNORM}, .choices=&format_choices,
+    {"format", PARAM_TYPE_SELECT, OFFSET(format), {.i64=NGLI_FORMAT_R8G8B8A8_UNORM}, .choices=&format_choices,
                .desc=NGLI_DOCSTRING("format of the pixel data")},
     {"size", PARAM_TYPE_INT, OFFSET(params.width), {.i64=0},
              .desc=NGLI_DOCSTRING("width and height of the texture")},
@@ -396,10 +401,25 @@ static void texture_release(struct ngl_node *node)
     ngli_image_reset(&s->image);
 }
 
+static int get_preferred_format(struct gctx *gctx, int format)
+{
+    switch (format) {
+    case NGLI_FORMAT_DEPTH:
+        return ngli_gctx_get_prefered_depth_format(gctx);
+    case NGLI_FORMAT_DEPTH_STENCIL:
+        return ngli_gctx_get_prefered_depth_stencil_format(gctx);
+    default:
+        return format;
+    };
+}
+
 static int texture2d_init(struct ngl_node *node)
 {
+    struct ngl_ctx *ctx = node->ctx;
+    struct gctx *gctx = ctx->gctx;
     struct texture_priv *s = node->priv_data;
     s->params.type = NGLI_TEXTURE_TYPE_2D;
+    s->params.format = get_preferred_format(gctx, s->format);
     s->supported_image_layouts = s->direct_rendering ? -1 : (1 << NGLI_IMAGE_LAYOUT_DEFAULT);
     return 0;
 }
@@ -416,6 +436,7 @@ static int texture3d_init(struct ngl_node *node)
 
     struct texture_priv *s = node->priv_data;
     s->params.type = NGLI_TEXTURE_TYPE_3D;
+    s->params.format = get_preferred_format(gctx, s->format);
 
     return 0;
 }
@@ -432,6 +453,7 @@ static int texturecube_init(struct ngl_node *node)
 
     struct texture_priv *s = node->priv_data;
     s->params.type = NGLI_TEXTURE_TYPE_CUBE;
+    s->params.format = get_preferred_format(gctx, s->format);
 
     return 0;
 }
