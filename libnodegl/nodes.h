@@ -84,6 +84,7 @@ struct ngl_ctx {
     struct rendertarget_desc *rendertarget_desc;
     struct ngl_node *scene;
     struct ngl_config config;
+    int invert_y_axis;
     struct darray modelview_matrix_stack;
     struct darray projection_matrix_stack;
     struct darray activitycheck_nodes;

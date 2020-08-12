@@ -87,6 +87,39 @@ static int cmd_configure(struct ngl_ctx *s, void *arg)
         return config->platform;
     }
 
+    switch (config->backend) {
+    case NGL_BACKEND_OPENGL:
+    case NGL_BACKEND_OPENGLES:
+        s->invert_y_axis = config->offscreen;
+        break;
+    default:
+        s->invert_y_axis = 0;
+    }
+
+    ngli_darray_clear(&s->projection_matrix_stack);
+    if (s->invert_y_axis) {
+        static const NGLI_ALIGNED_MAT(matrix) = {
+            1.0f, 0.0f, 0.0f, 0.0f,
+            0.0f,-1.0f, 0.0f, 0.0f,
+            0.0f, 0.0f, 1.0f, 0.0f,
+            0.0f, 0.0f, 0.0f, 1.0f,
+        };
+        if(!ngli_darray_push(&s->projection_matrix_stack, matrix))
+            return NGL_ERROR_MEMORY;
+    } else {
+        static const NGLI_ALIGNED_MAT(matrix) = NGLI_MAT4_IDENTITY;
+        if(!ngli_darray_push(&s->projection_matrix_stack, matrix))
+            return NGL_ERROR_MEMORY;
+    }
+
+    if (config->offscreen &&
+        (config->backend == NGL_BACKEND_OPENGL ||
+        config->backend == NGL_BACKEND_OPENGLES)) {
+        s->invert_y_axis = 1;
+    } else {
+        s->invert_y_axis = 0;
+    }
+
     s->config = *config;
 
     s->gctx = ngli_gctx_create(s);

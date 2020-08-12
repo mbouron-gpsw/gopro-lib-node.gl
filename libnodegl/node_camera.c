@@ -196,6 +196,16 @@ static int camera_update(struct ngl_node *node, double t)
         ngli_mat4_identity(s->projection_matrix);
     }
 
+    if (ctx->invert_y_axis) {
+        static const NGLI_ALIGNED_MAT(matrix) = {
+            1.0f, 0.0f, 0.0f, 0.0f,
+            0.0f,-1.0f, 0.0f, 0.0f,
+            0.0f, 0.0f, 1.0f, 0.0f,
+            0.0f, 0.0f, 0.0f, 1.0f,
+        };
+        ngli_mat4_mul(s->projection_matrix, s->projection_matrix, matrix);
+    }
+
     return ngli_node_update(child, t);
 }
 
