@@ -426,6 +426,8 @@ static int handle_scene(const uint8_t *data, int size)
         return NGL_ERROR_INVALID_DATA;
     struct player *p = g_player;
     struct ngl_node *scene = ngl_node_deserialize((const char *)data);
+    if (!scene)
+        return NGL_ERROR_INVALID_DATA;
     scene = add_progress_bar(scene);
     int ret = ngl_set_scene(p->ngl, scene);
     ngl_node_unrefp(&scene);
