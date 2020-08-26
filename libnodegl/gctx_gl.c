@@ -400,9 +400,6 @@ static int gl_init(struct gctx *s)
 
     ngli_gctx_set_clear_color(s, config->clear_color);
 
-    struct graphicstate graphicstate = NGLI_GRAPHICSTATE_DEFAULTS;
-    ctx->graphicstate = graphicstate;
-
 #if defined(HAVE_VAAPI)
     ret = ngli_vaapi_init(s->ctx);
     if (ret < 0)
