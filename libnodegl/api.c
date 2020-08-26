@@ -200,7 +200,8 @@ static int cmd_draw(struct ngl_ctx *s, void *arg)
     if (ret < 0)
         return ret;
 
-    return ngli_gctx_draw(s->gctx, t);
+    struct ngl_node *scene = s->scene;
+    return ngli_gctx_draw(s->gctx, scene, t);
 }
 
 static int cmd_stop(struct ngl_ctx *s, void *arg)
