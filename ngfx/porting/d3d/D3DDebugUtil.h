@@ -27,10 +27,6 @@
 const bool D3D_ENABLE_TRACE = false;
 const bool DEBUG_SHADERS = true;
 
-namespace ngfx {
-
-}
-
 #define D3D_TRACE(func) \
     { if (D3D_ENABLE_TRACE) LOG("%s", #func); func; }
 

@@ -9,4 +9,7 @@ ngl-cov/
 cmake-build-*
 __pycache__
 .idea
-
+nodegl/pynodegl/*.cpp
+nodegl/pynodegl/build/*
+nodegl/pynodegl/*.pyd
+nodegl/pynodegl/*.pdb

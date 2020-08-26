@@ -31,7 +31,7 @@ namespace NGL {
     class NGLApplication : public Application {
     public:
         NGLApplication(int w = Window::DISPLAY_WIDTH, int h = Window::DISPLAY_HEIGHT,
-            bool enableDepthStencil = false /*true*/, bool offscreen = false);
+            bool enableDepthStencil = true, bool offscreen = false);
         virtual ~NGLApplication() {}
         void init() override;
         void createWindow() override;

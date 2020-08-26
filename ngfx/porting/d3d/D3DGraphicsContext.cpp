@@ -31,6 +31,7 @@ void D3DGraphicsContext::create(const char* appName, bool enableDepthStencil, bo
     HRESULT hResult;
     this->debug = debug;
     this->enableDepthStencil = enableDepthStencil;
+    depthFormat = PIXELFORMAT_D16_UNORM;
     UINT dxgiFactoryFlags = 0;
     if (debug) {
         ComPtr<ID3D12Debug> debugController;
@@ -143,7 +144,7 @@ void D3DGraphicsContext::createSwapchainFramebuffers(int w, int h) {
     // Create frame buffers for every swap chain image
     d3dSwapchainFramebuffers.resize(d3dSwapchain.numImages);
     for (uint32_t i = 0; i < d3dSwapchainFramebuffers.size(); i++) {
-        //TODO: add support for depth/stencil and MSAA
+        //TODO: add support for MSAA
         std::vector<D3DFramebuffer::D3DAttachment> attachments = {
             {
                 d3dSwapchain.renderTargets[i].Get(),
@@ -154,6 +155,16 @@ void D3DGraphicsContext::createSwapchainFramebuffers(int w, int h) {
                 DXGI_FORMAT(surfaceFormat)
             }
         };
+        if (enableDepthStencil) {
+            attachments.push_back({
+                d3dDepthStencilView->v.Get(), 
+                d3dDepthStencilView->descriptor,
+                0,
+                IMAGE_USAGE_DEPTH_STENCIL_ATTACHMENT_BIT,
+                1,
+                DXGI_FORMAT(depthFormat)
+            });
+        }
         d3dSwapchainFramebuffers[i].create(attachments, w, h);
     }
 }
