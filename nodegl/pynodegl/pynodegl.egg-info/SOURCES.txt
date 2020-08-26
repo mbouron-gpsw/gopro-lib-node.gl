@@ -1,0 +1,6 @@
+pynodegl.pyx
+setup.py
+pynodegl.egg-info/PKG-INFO
+pynodegl.egg-info/SOURCES.txt
+pynodegl.egg-info/dependency_links.txt
+pynodegl.egg-info/top_level.txt

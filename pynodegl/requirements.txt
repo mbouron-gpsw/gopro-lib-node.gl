@@ -1,6 +1,0 @@
-# FIXME: this is temporary until setuptools/pip is fixed. While setup_requires
-# should be enough, it actually isn't due to Extension() not recognizing the
-# .pyx extension before it honors the dependencies.
-cython>=0.29.6
-# Workaround for the following issue on Ubuntu 20.04: "error: invalid command 'bdist_wheel'"
-wheel

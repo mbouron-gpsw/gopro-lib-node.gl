@@ -6,3 +6,7 @@ sxplayer*
 *.gcda
 *.gcno
 ngl-cov/
+cmake-build-*
+__pycache__
+.idea
+
