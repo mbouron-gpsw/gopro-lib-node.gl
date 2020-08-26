@@ -37,6 +37,7 @@
 #include "memory.h"
 #include "nodegl.h"
 #include "nodes.h"
+#include "pgcache.h"
 #include "rnode.h"
 
 #if defined(HAVE_VAAPI)
@@ -83,7 +84,7 @@ static int cmd_configure(struct ngl_ctx *s, void *arg)
 #if defined(HAVE_VAAPI)
     ngli_vaapi_reset(s);
 #endif
-
+    ngli_pgcache_reset(&s->pgcache);
     ngli_gctx_freep(&s->gctx);
 
     if (config->backend == NGL_BACKEND_AUTO)
@@ -113,6 +114,10 @@ static int cmd_configure(struct ngl_ctx *s, void *arg)
     }
 
     s->rendertarget_desc = ngli_gctx_get_default_rendertarget_desc(s->gctx);
+
+    ret = ngli_pgcache_init(&s->pgcache, s->gctx);
+    if (ret < 0)
+        return ret;
 
 #if defined(HAVE_VAAPI)
     ret = ngli_vaapi_init(s);
@@ -211,6 +216,7 @@ static int cmd_stop(struct ngl_ctx *s, void *arg)
 #if defined(HAVE_VAAPI)
     ngli_vaapi_reset(s);
 #endif
+    ngli_pgcache_reset(&s->pgcache);
     ngli_gctx_freep(&s->gctx);
 
     return 0;
