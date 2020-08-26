@@ -83,8 +83,13 @@ void D3DGraphicsContext::setSurface(Surface* surface) {
         TODO();
     }
     if (surface && enableDepthStencil) {
-        d3dDepthStencilView.reset(new D3DDepthStencilView());
-        d3dDepthStencilView->create(this, surface->w, surface->h);
+        d3dDepthStencilView.reset(
+            (D3DTexture*)Texture::create(
+                this, nullptr, nullptr, depthFormat, 
+                surface->w * surface->h * 4, surface->w, surface->h, 1, 1, 
+                IMAGE_USAGE_DEPTH_STENCIL_ATTACHMENT_BIT
+            )
+        );
         if (numSamples != 1) {
             TODO();
         }
@@ -152,17 +157,19 @@ void D3DGraphicsContext::createSwapchainFramebuffers(int w, int h) {
                 0,
                 IMAGE_USAGE_COLOR_ATTACHMENT_BIT,
                 1,
-                DXGI_FORMAT(surfaceFormat)
+                DXGI_FORMAT(surfaceFormat),
+                nullptr
             }
         };
         if (enableDepthStencil) {
             attachments.push_back({
                 d3dDepthStencilView->v.Get(), 
-                d3dDepthStencilView->descriptor,
+                d3dDepthStencilView->dsvDescriptor.cpuHandle,
                 0,
                 IMAGE_USAGE_DEPTH_STENCIL_ATTACHMENT_BIT,
                 1,
-                DXGI_FORMAT(depthFormat)
+                DXGI_FORMAT(depthFormat),
+                d3dDepthStencilView.get()
             });
         }
         d3dSwapchainFramebuffers[i].create(attachments, w, h);

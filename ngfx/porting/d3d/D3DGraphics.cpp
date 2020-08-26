@@ -96,44 +96,49 @@ void D3DGraphics::bindTexture(CommandBuffer* commandBuffer, Texture* texture, ui
     D3D_TRACE(d3dCommandList->SetGraphicsRootDescriptorTable(set + 1, d3dTexture->defaultSamplerDescriptor.gpuHandle));
 }
 
+static void resourceBarrier(D3DCommandList* cmdList, D3DFramebuffer::D3DAttachment* p, 
+        D3D12_RESOURCE_STATES currentState, D3D12_RESOURCE_STATES newState, UINT subresourceIndex = D3D12_RESOURCE_BARRIER_ALL_SUBRESOURCES) {
+    if (p->texture) p->texture->resourceBarrier(cmdList, newState, subresourceIndex);
+    else {
+        D3D_TRACE(cmdList->v->ResourceBarrier(1, &CD3DX12_RESOURCE_BARRIER::Transition(
+            p->resource, currentState, newState,
+            p->subresourceIndex)));
+    }
+}
 void D3DGraphics::beginRenderPass(CommandBuffer* commandBuffer, RenderPass* renderPass, Framebuffer* framebuffer,
         glm::vec4 clearColor, float clearDepth, uint32_t clearStencil) {
     auto d3dCtx = d3d(ctx);
     auto d3dRenderPass = d3d(renderPass);
-    auto d3dCommandList = d3d(commandBuffer)->v;
+    auto d3dCommandList = d3d(commandBuffer);
     auto d3dFramebuffer = d3d(framebuffer);
     auto& colorAttachments = d3dFramebuffer->colorAttachments;
     auto& resolveAttachments = d3dFramebuffer->resolveAttachments;
     auto depthStencilAttachment = d3dFramebuffer->depthStencilAttachment;
     if (!resolveAttachments.empty()) {
         for (auto& colorAttachment : colorAttachments) {
-            D3D_TRACE(d3dCommandList->ResourceBarrier(1, &CD3DX12_RESOURCE_BARRIER::Transition(
-                colorAttachment->resource, D3D12_RESOURCE_STATE_RESOLVE_SOURCE, D3D12_RESOURCE_STATE_RENDER_TARGET,
-                colorAttachment->subresourceIndex)
-            ));
+            resourceBarrier(d3dCommandList, colorAttachment, D3D12_RESOURCE_STATE_RESOLVE_SOURCE, D3D12_RESOURCE_STATE_RENDER_TARGET,
+                colorAttachment->subresourceIndex);
         }
     }
     else {
         for (auto& colorAttachment : colorAttachments) {
-            D3D_TRACE(d3dCommandList->ResourceBarrier(1, &CD3DX12_RESOURCE_BARRIER::Transition(
-                colorAttachment->resource, d3dRenderPass->finalResourceState, d3dRenderPass->initialResourceState,
-                colorAttachment->subresourceIndex)
-            ));
+            resourceBarrier(d3dCommandList, colorAttachment, d3dRenderPass->finalResourceState, d3dRenderPass->initialResourceState,
+                colorAttachment->subresourceIndex);
         }
     }
     auto cbvSrvUavHeap = d3dCtx->d3dCbvSrvUavDescriptorHeap.v.Get();
     auto samplerDescriptorHeap = d3dCtx->d3dSamplerDescriptorHeap.v.Get();
     std::vector<ID3D12DescriptorHeap*> descriptorHeaps = { cbvSrvUavHeap, samplerDescriptorHeap };
-    D3D_TRACE(d3dCommandList->SetDescriptorHeaps(UINT(descriptorHeaps.size()), descriptorHeaps.data()));
+    D3D_TRACE(d3dCommandList->v->SetDescriptorHeaps(UINT(descriptorHeaps.size()), descriptorHeaps.data()));
     std::vector<D3D12_CPU_DESCRIPTOR_HANDLE> colorAttachmentHandles(colorAttachments.size());
     for (uint32_t j = 0; j < colorAttachments.size(); j++) colorAttachmentHandles[j] = colorAttachments[j]->cpuDescriptor;
-    D3D_TRACE(d3dCommandList->OMSetRenderTargets(colorAttachments.size(), colorAttachmentHandles.data(), FALSE, 
+    D3D_TRACE(d3dCommandList->v->OMSetRenderTargets(colorAttachments.size(), colorAttachmentHandles.data(), FALSE,
         depthStencilAttachment ? &depthStencilAttachment->cpuDescriptor : nullptr));
     for (auto& colorAttachment : colorAttachments) {
-        D3D_TRACE(d3dCommandList->ClearRenderTargetView(colorAttachment->cpuDescriptor, glm::value_ptr(clearColor), 0, nullptr));
+        D3D_TRACE(d3dCommandList->v->ClearRenderTargetView(colorAttachment->cpuDescriptor, glm::value_ptr(clearColor), 0, nullptr));
     }
     if (depthStencilAttachment) {
-        D3D_TRACE(d3dCommandList->ClearDepthStencilView(
+        D3D_TRACE(d3dCommandList->v->ClearDepthStencilView(
             depthStencilAttachment->cpuDescriptor, D3D12_CLEAR_FLAG_DEPTH | D3D12_CLEAR_FLAG_STENCIL, clearDepth, clearStencil, 0, nullptr));
     }
     currentRenderPass = renderPass;
@@ -141,7 +146,7 @@ void D3DGraphics::beginRenderPass(CommandBuffer* commandBuffer, RenderPass* rend
 }
 
 void D3DGraphics::endRenderPass(CommandBuffer* commandBuffer) {
-    auto d3dCommandList = d3d(commandBuffer)->v;
+    auto d3dCommandList = d3d(commandBuffer);
     auto d3dFramebuffer = d3d(currentFramebuffer);
     auto& colorAttachments = d3dFramebuffer->colorAttachments;
     auto& resolveAttachments = d3dFramebuffer->resolveAttachments;
@@ -150,27 +155,18 @@ void D3DGraphics::endRenderPass(CommandBuffer* commandBuffer) {
         for (uint32_t j = 0; j < colorAttachments.size(); j++) {
             auto& colorAttachment = colorAttachments[j];
             auto& resolveAttachment = resolveAttachments[j];
-            D3D_TRACE(d3dCommandList->ResourceBarrier(1, &CD3DX12_RESOURCE_BARRIER::Transition(
-                colorAttachment->resource, D3D12_RESOURCE_STATE_RENDER_TARGET, D3D12_RESOURCE_STATE_RESOLVE_SOURCE
-            )));
-            D3D_TRACE(d3dCommandList->ResourceBarrier(1, &CD3DX12_RESOURCE_BARRIER::Transition(
-                resolveAttachment->resource, D3D12_RESOURCE_STATE_PRESENT, D3D12_RESOURCE_STATE_RESOLVE_DEST
-            )));
-            D3D_TRACE(d3dCommandList->ResolveSubresource(resolveAttachment->resource, resolveAttachment->subresourceIndex,
+            resourceBarrier(d3dCommandList, colorAttachment, D3D12_RESOURCE_STATE_RENDER_TARGET, D3D12_RESOURCE_STATE_RESOLVE_SOURCE);
+            resourceBarrier(d3dCommandList, resolveAttachment, D3D12_RESOURCE_STATE_PRESENT, D3D12_RESOURCE_STATE_RESOLVE_DEST);
+            D3D_TRACE(d3dCommandList->v->ResolveSubresource(resolveAttachment->resource, resolveAttachment->subresourceIndex,
                 colorAttachment->resource, colorAttachment->subresourceIndex, colorAttachment->format));
-
-            D3D_TRACE(d3dCommandList->ResourceBarrier(1, &CD3DX12_RESOURCE_BARRIER::Transition(
-                resolveAttachment->resource, D3D12_RESOURCE_STATE_RESOLVE_DEST, d3dRenderPass->finalResourceState,
-                resolveAttachment->subresourceIndex)
-            ));
+            resourceBarrier(d3dCommandList, resolveAttachment, D3D12_RESOURCE_STATE_RESOLVE_DEST, d3dRenderPass->finalResourceState,
+                resolveAttachment->subresourceIndex);
         }
     }
     else {
         for (auto& colorAttachment : colorAttachments) {
-            D3D_TRACE(d3dCommandList->ResourceBarrier(1, &CD3DX12_RESOURCE_BARRIER::Transition(
-                colorAttachment->resource, d3dRenderPass->initialResourceState, d3dRenderPass->finalResourceState,
-                colorAttachment->subresourceIndex)
-            ));
+            resourceBarrier(d3dCommandList, colorAttachment, d3dRenderPass->initialResourceState, d3dRenderPass->finalResourceState,
+                colorAttachment->subresourceIndex);
         }
     }
     currentRenderPass = nullptr;
