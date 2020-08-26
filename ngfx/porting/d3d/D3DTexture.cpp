@@ -65,7 +65,7 @@ void D3DTexture::create(D3DGraphicsContext* ctx, D3DGraphics* graphics, void* da
         isRenderTarget ? &clearValue : nullptr,
         IID_PPV_ARGS(&v)));
 
-    for (auto& s : currentResourceState) s = D3D12_RESOURCE_STATE_COPY_DEST;
+    for (auto& s :currentResourceState) s = D3D12_RESOURCE_STATE_COPY_DEST;
 
     if (imageUsageFlags & IMAGE_USAGE_SAMPLED_BIT) {
         defaultSrvDescriptor = getSrvDescriptor(0, mipLevels);
@@ -367,7 +367,7 @@ void D3DTexture::resourceBarrier(D3DCommandList* cmdList, D3D12_RESOURCE_STATES 
     for (uint32_t j = j0; j < j1; j++) {
         if (currentResourceState[j] == newState) continue;
         D3D_TRACE(cmdList->v->ResourceBarrier(1, &CD3DX12_RESOURCE_BARRIER::Transition(
-            v.Get(), currentResourceState[j], newState, subresource
+            v.Get(), currentResourceState[j], newState, j
         )));
         currentResourceState[j] = newState;
     }
