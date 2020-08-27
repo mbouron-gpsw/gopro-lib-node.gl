@@ -125,7 +125,7 @@ D3DDescriptorHandle D3DTexture::getSrvDescriptor(uint32_t baseMipLevel, uint32_t
     D3D12_SHADER_RESOURCE_VIEW_DESC srvDesc = {};
     srvDesc.Shader4ComponentMapping = D3D12_DEFAULT_SHADER_4_COMPONENT_MAPPING;
     srvDesc.Format = resourceDesc.Format;
-    if (srvDesc.Format == DXGI_FORMAT_R16_TYPELESS) srvDesc.Format = DXGI_FORMAT_R16_FLOAT;
+    if (srvDesc.Format == DXGI_FORMAT_R16_TYPELESS) srvDesc.Format = DXGI_FORMAT_R16_UNORM;
     srvDesc.ViewDimension = D3D12_SRV_DIMENSION(textureType);
     if (textureType == TEXTURE_TYPE_2D) {
         srvDesc.Texture2D.MostDetailedMip = baseMipLevel;
