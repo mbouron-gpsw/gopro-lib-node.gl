@@ -53,6 +53,7 @@ void D3DTexture::create(D3DGraphicsContext* ctx, D3DGraphics* graphics, void* da
     else {
         auto texFormat = format;
         if (texFormat == DXGI_FORMAT_D16_UNORM && (usageFlags & IMAGE_USAGE_SAMPLED_BIT)) texFormat = DXGI_FORMAT_R16_TYPELESS;
+        else if (texFormat == DXGI_FORMAT_D24_UNORM_S8_UINT && (usageFlags & IMAGE_USAGE_SAMPLED_BIT)) texFormat = DXGI_FORMAT_R24G8_TYPELESS;
         resourceDesc = CD3DX12_RESOURCE_DESC::Tex2D(texFormat, w, h, d * arrayLayers, mipLevels, numSamples, 0, resourceFlags);
     }
     bool isRenderTarget = (resourceFlags & D3D12_RESOURCE_FLAG_ALLOW_RENDER_TARGET);
@@ -126,6 +127,7 @@ D3DDescriptorHandle D3DTexture::getSrvDescriptor(uint32_t baseMipLevel, uint32_t
     srvDesc.Shader4ComponentMapping = D3D12_DEFAULT_SHADER_4_COMPONENT_MAPPING;
     srvDesc.Format = resourceDesc.Format;
     if (srvDesc.Format == DXGI_FORMAT_R16_TYPELESS) srvDesc.Format = DXGI_FORMAT_R16_UNORM;
+    else if (srvDesc.Format == DXGI_FORMAT_R24G8_TYPELESS) srvDesc.Format = DXGI_FORMAT_R24_UNORM_X8_TYPELESS;
     srvDesc.ViewDimension = D3D12_SRV_DIMENSION(textureType);
     if (textureType == TEXTURE_TYPE_2D) {
         srvDesc.Texture2D.MostDetailedMip = baseMipLevel;
