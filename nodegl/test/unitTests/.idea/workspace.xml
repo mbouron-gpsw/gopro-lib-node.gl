@@ -19,17 +19,14 @@
     <select />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="849132aa-e74d-43d4-8dd2-1dae7671085e" name="Default Changelist" comment="">
-      <change beforePath="$PROJECT_DIR$/../pyPhotoStitch/GP0056_BACK.JPG" beforeDir="false" afterPath="$PROJECT_DIR$/../pyPhotoStitch/GP0056_BACK.JPG" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../pyPhotoStitch/GP0056_FRNT.JPG" beforeDir="false" afterPath="$PROJECT_DIR$/../pyPhotoStitch/GP0056_FRNT.JPG" afterDir="false" />
-    </list>
+    <list default="true" id="849132aa-e74d-43d4-8dd2-1dae7671085e" name="Default Changelist" comment="" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
     <option name="LAST_RESOLUTION" value="IGNORE" />
   </component>
   <component name="Git.Settings">
-    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$/../.." />
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$/../../.." />
   </component>
   <component name="ProjectId" id="1g6HdQPxrWeX3t8i7hOxc8Vpj6i" />
   <component name="ProjectLevelVcsManager" settingsEditedManually="true" />
@@ -42,7 +39,7 @@
     <property name="last_opened_file_path" value="$PROJECT_DIR$/../../../personal--graphics-engine/scripts/compile_shaders_dx12.py" />
     <property name="settings.editor.selected.configurable" value="com.jetbrains.python.configuration.PyActiveSdkModuleConfigurable" />
   </component>
-  <component name="RunManager" selected="Python.texture">
+  <component name="RunManager" selected="Python.data">
     <configuration name="anim" type="PythonConfigurationType" factoryName="Python">
       <module name="unitTests" />
       <option name="INTERPRETER_OPTIONS" value="" />
@@ -92,8 +89,8 @@
       <option name="INTERPRETER_OPTIONS" value="" />
       <option name="PARENT_ENVS" value="true" />
       <envs>
-        <env name="V" value="1" />
         <env name="PYTHONUNBUFFERED" value="1" />
+        <env name="V" value="1" />
         <env name="PLATFORM" value="WIN32" />
         <env name="PATH" value="C:\Program Files (x86)\Windows Kits\10\bin\10.0.18362.0\x64\;C:\VulkanSDK\1.2.131.2\Bin;%PATH%" />
       </envs>
@@ -117,19 +114,18 @@
       <option name="PARENT_ENVS" value="true" />
       <envs>
         <env name="PYTHONUNBUFFERED" value="1" />
-        <env name="PYTHONPATH" value="../../pynodegl;../../pynodegl-utils;../../../personal--graphics-engine/scripts" />
-        <env name="DATA_PATH" value="../../../personal--graphics-engine/cmake-build-debug" />
-        <env name="DEBUG" value="1" />
+        <env name="PYTHONPATH" value="../../pynodegl;../../pynodegl-utils;../../../scripts" />
+        <env name="DATA_PATH" value="../../../cmake-build-debug" />
         <env name="PLATFORM" value="WIN32" />
         <env name="Path" value="C:\VulkanSDK\1.2.131.2\Bin;%PATH%" />
       </envs>
-      <option name="SDK_HOME" value="" />
+      <option name="SDK_HOME" value="C:\Users\jmoguillansky\AppData\Local\Programs\Python\Python38\python_d.exe" />
       <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$" />
-      <option name="IS_MODULE_SDK" value="true" />
+      <option name="IS_MODULE_SDK" value="false" />
       <option name="ADD_CONTENT_ROOTS" value="true" />
       <option name="ADD_SOURCE_ROOTS" value="true" />
       <option name="SCRIPT_NAME" value="$PROJECT_DIR$/../../nodegl-env/bin/ngl-test" />
-      <option name="PARAMETERS" value="data.py data_single_int_uniform refs/data_single_int_uniform.ref" />
+      <option name="PARAMETERS" value="data.py data_streamed_buffer_vec4 refs/data_streamed_buffer_vec4.ref" />
       <option name="SHOW_COMMAND_LINE" value="false" />
       <option name="EMULATE_TERMINAL" value="false" />
       <option name="MODULE_MODE" value="false" />
@@ -169,9 +165,9 @@
         <env name="DATA_PATH" value="../../../personal--graphics-engine/cmake-build-debug" />
         <env name="DEBUG" value="1" />
       </envs>
-      <option name="SDK_HOME" value="" />
+      <option name="SDK_HOME" value="C:\Users\jmoguillansky\AppData\Local\Programs\Python\Python38\python_d.exe" />
       <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$" />
-      <option name="IS_MODULE_SDK" value="true" />
+      <option name="IS_MODULE_SDK" value="false" />
       <option name="ADD_CONTENT_ROOTS" value="true" />
       <option name="ADD_SOURCE_ROOTS" value="true" />
       <option name="SCRIPT_NAME" value="$PROJECT_DIR$/../../nodegl-env/bin/ngl-test" />
@@ -238,64 +234,65 @@
         </entry>
       </map>
     </option>
+    <option name="oldMeFiltersMigrated" value="true" />
   </component>
   <component name="WindowStateProjectService">
-    <state x="688" y="73" width="1092" height="763" key="#com.intellij.execution.impl.EditConfigurationsDialog" timestamp="1598294454436">
+    <state x="688" y="73" width="1092" height="763" key="#com.intellij.execution.impl.EditConfigurationsDialog" timestamp="1598552197686">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
-    <state x="688" y="73" width="1092" height="763" key="#com.intellij.execution.impl.EditConfigurationsDialog/-1280.65.1280.984/0.0.1920.1040@0.0.1920.1040" timestamp="1598294454436" />
-    <state width="1554" height="466" key="DebuggerActiveHint" timestamp="1597960990686">
+    <state x="688" y="73" width="1092" height="763" key="#com.intellij.execution.impl.EditConfigurationsDialog/-1280.65.1280.984/0.0.1920.1040@0.0.1920.1040" timestamp="1598552197686" />
+    <state width="1554" height="466" key="DebuggerActiveHint" timestamp="1598554174652">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
-    <state width="1554" height="466" key="DebuggerActiveHint/-1280.65.1280.984/0.0.1920.1040@0.0.1920.1040" timestamp="1597960990686" />
-    <state x="690" y="159" width="578" height="490" key="EnvironmentVariablesDialog" timestamp="1597962545348">
+    <state width="1554" height="466" key="DebuggerActiveHint/-1280.65.1280.984/0.0.1920.1040@0.0.1920.1040" timestamp="1598554174652" />
+    <state x="690" y="159" width="578" height="490" key="EnvironmentVariablesDialog" timestamp="1598552196892">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
-    <state x="690" y="159" width="578" height="490" key="EnvironmentVariablesDialog/-1280.65.1280.984/0.0.1920.1040@0.0.1920.1040" timestamp="1597962545348" />
-    <state x="578" y="317" key="FileChooserDialogImpl" timestamp="1597960569644">
+    <state x="690" y="159" width="578" height="490" key="EnvironmentVariablesDialog/-1280.65.1280.984/0.0.1920.1040@0.0.1920.1040" timestamp="1598552196892" />
+    <state x="578" y="317" key="FileChooserDialogImpl" timestamp="1598552318001">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
-    <state x="578" y="317" key="FileChooserDialogImpl/-1280.65.1280.984/0.0.1920.1040@0.0.1920.1040" timestamp="1597960569644" />
-    <state width="1899" height="181" key="GridCell.Tab.0.bottom" timestamp="1598294462420">
+    <state x="578" y="317" key="FileChooserDialogImpl/-1280.65.1280.984/0.0.1920.1040@0.0.1920.1040" timestamp="1598552318001" />
+    <state width="1899" height="280" key="GridCell.Tab.0.bottom" timestamp="1598555092609">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
-    <state width="1899" height="181" key="GridCell.Tab.0.bottom/-1280.65.1280.984/0.0.1920.1040@0.0.1920.1040" timestamp="1598294462420" />
-    <state width="1899" height="181" key="GridCell.Tab.0.center" timestamp="1598294462419">
+    <state width="1899" height="280" key="GridCell.Tab.0.bottom/-1280.65.1280.984/0.0.1920.1040@0.0.1920.1040" timestamp="1598555092609" />
+    <state width="1899" height="280" key="GridCell.Tab.0.center" timestamp="1598555092609">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
-    <state width="1899" height="181" key="GridCell.Tab.0.center/-1280.65.1280.984/0.0.1920.1040@0.0.1920.1040" timestamp="1598294462419" />
-    <state width="1899" height="181" key="GridCell.Tab.0.left" timestamp="1598294462419">
+    <state width="1899" height="280" key="GridCell.Tab.0.center/-1280.65.1280.984/0.0.1920.1040@0.0.1920.1040" timestamp="1598555092609" />
+    <state width="1899" height="280" key="GridCell.Tab.0.left" timestamp="1598555092609">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
-    <state width="1899" height="181" key="GridCell.Tab.0.left/-1280.65.1280.984/0.0.1920.1040@0.0.1920.1040" timestamp="1598294462419" />
-    <state width="1899" height="181" key="GridCell.Tab.0.right" timestamp="1598294462420">
+    <state width="1899" height="280" key="GridCell.Tab.0.left/-1280.65.1280.984/0.0.1920.1040@0.0.1920.1040" timestamp="1598555092609" />
+    <state width="1899" height="280" key="GridCell.Tab.0.right" timestamp="1598555092609">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
-    <state width="1899" height="181" key="GridCell.Tab.0.right/-1280.65.1280.984/0.0.1920.1040@0.0.1920.1040" timestamp="1598294462420" />
-    <state width="1899" height="181" key="GridCell.Tab.1.bottom" timestamp="1598294458732">
+    <state width="1899" height="280" key="GridCell.Tab.0.right/-1280.65.1280.984/0.0.1920.1040@0.0.1920.1040" timestamp="1598555092609" />
+    <state width="1899" height="243" key="GridCell.Tab.1.bottom" timestamp="1598554782178">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
-    <state width="1899" height="181" key="GridCell.Tab.1.bottom/-1280.65.1280.984/0.0.1920.1040@0.0.1920.1040" timestamp="1598294458732" />
-    <state width="1899" height="181" key="GridCell.Tab.1.center" timestamp="1598294458732">
+    <state width="1899" height="243" key="GridCell.Tab.1.bottom/-1280.65.1280.984/0.0.1920.1040@0.0.1920.1040" timestamp="1598554782178" />
+    <state width="1899" height="243" key="GridCell.Tab.1.center" timestamp="1598554782178">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
-    <state width="1899" height="181" key="GridCell.Tab.1.center/-1280.65.1280.984/0.0.1920.1040@0.0.1920.1040" timestamp="1598294458732" />
-    <state width="1899" height="181" key="GridCell.Tab.1.left" timestamp="1598294458732">
+    <state width="1899" height="243" key="GridCell.Tab.1.center/-1280.65.1280.984/0.0.1920.1040@0.0.1920.1040" timestamp="1598554782178" />
+    <state width="1899" height="243" key="GridCell.Tab.1.left" timestamp="1598554782178">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
-    <state width="1899" height="181" key="GridCell.Tab.1.left/-1280.65.1280.984/0.0.1920.1040@0.0.1920.1040" timestamp="1598294458732" />
-    <state width="1899" height="181" key="GridCell.Tab.1.right" timestamp="1598294458732">
+    <state width="1899" height="243" key="GridCell.Tab.1.left/-1280.65.1280.984/0.0.1920.1040@0.0.1920.1040" timestamp="1598554782178" />
+    <state width="1899" height="243" key="GridCell.Tab.1.right" timestamp="1598554782178">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
-    <state width="1899" height="181" key="GridCell.Tab.1.right/-1280.65.1280.984/0.0.1920.1040@0.0.1920.1040" timestamp="1598294458732" />
+    <state width="1899" height="243" key="GridCell.Tab.1.right/-1280.65.1280.984/0.0.1920.1040@0.0.1920.1040" timestamp="1598554782178" />
     <state x="428" y="146" key="SettingsEditor" timestamp="1597437044193">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
     <state x="428" y="146" key="SettingsEditor/-1280.65.1280.984/0.0.1920.1040@0.0.1920.1040" timestamp="1597437044193" />
-    <state width="968" height="528" key="XDebugger.FullValuePopup" timestamp="1597882861207">
+    <state width="968" height="528" key="XDebugger.FullValuePopup" timestamp="1598551821503">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
-    <state width="968" height="528" key="XDebugger.FullValuePopup/-1280.65.1280.984/0.0.1920.1040@0.0.1920.1040" timestamp="1597882861207" />
+    <state width="968" height="528" key="XDebugger.FullValuePopup/-1280.65.1280.984/0.0.1920.1040@0.0.1920.1040" timestamp="1598551821503" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
@@ -327,5 +324,11 @@
         </line-breakpoint>
       </breakpoints>
     </breakpoint-manager>
+    <watches-manager>
+      <configuration name="PythonConfigurationType">
+        <watch expression="nb_keyframes" language="Python" />
+        <watch expression="this" language="Python" />
+      </configuration>
+    </watches-manager>
   </component>
 </project>
