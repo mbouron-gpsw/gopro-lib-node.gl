@@ -1,0 +1,15 @@
+--- cmake-build-debug/test_histogram.comp.hlsl.map	2020-08-28 14:44:28.281875000 -0700
++++ cmake-build-debug/test_histogram.comp.hlsl.map.patch	2020-08-28 14:45:41.861015800 -0700
+@@ -1,9 +1,9 @@
+ DESCRIPTORS 2
+-	source_sampler DESCRIPTOR_TYPE_STORAGE_IMAGE 0
+-	histogram DESCRIPTOR_TYPE_STORAGE_BUFFER 1
++	source_sampler DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER 0
++	histogram DESCRIPTOR_TYPE_STORAGE_BUFFER 2
+ UNIFORM_BUFFER_INFOS 0
+ SHADER_STORAGE_BUFFER_INFOS 1
+-histogram 1 4
++histogram 2 4
+ histr 0 4 64 4
+ histg 256 4 64 4
+ histb 512 4 64 4
