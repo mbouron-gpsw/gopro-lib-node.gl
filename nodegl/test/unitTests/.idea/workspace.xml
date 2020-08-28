@@ -19,7 +19,14 @@
     <select />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="849132aa-e74d-43d4-8dd2-1dae7671085e" name="Default Changelist" comment="" />
+    <list default="true" id="849132aa-e74d-43d4-8dd2-1dae7671085e" name="Default Changelist" comment="">
+      <change beforePath="$PROJECT_DIR$/../../../ngfx/porting/d3d/D3DComputePipeline.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/../../../ngfx/porting/d3d/D3DComputePipeline.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../../ngfx/porting/d3d/D3DGraphics.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/../../../ngfx/porting/d3d/D3DGraphics.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../../ngfx/porting/d3d/D3DGraphicsPipeline.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/../../../ngfx/porting/d3d/D3DGraphicsPipeline.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../../ngfx/porting/d3d/D3DPipeline.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/../../../ngfx/porting/d3d/D3DPipeline.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../../ngfx/porting/d3d/D3DPipeline.h" beforeDir="false" afterPath="$PROJECT_DIR$/../../../ngfx/porting/d3d/D3DPipeline.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../../ngfx/porting/d3d/D3DShaderModule.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/../../../ngfx/porting/d3d/D3DShaderModule.cpp" afterDir="false" />
+    </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -39,7 +46,7 @@
     <property name="last_opened_file_path" value="$PROJECT_DIR$/../../../personal--graphics-engine/scripts/compile_shaders_dx12.py" />
     <property name="settings.editor.selected.configurable" value="com.jetbrains.python.configuration.PyActiveSdkModuleConfigurable" />
   </component>
-  <component name="RunManager" selected="Python.data">
+  <component name="RunManager" selected="Python.compute">
     <configuration name="anim" type="PythonConfigurationType" factoryName="Python">
       <module name="unitTests" />
       <option name="INTERPRETER_OPTIONS" value="" />
@@ -101,6 +108,31 @@
       <option name="ADD_SOURCE_ROOTS" value="true" />
       <option name="SCRIPT_NAME" value="$PROJECT_DIR$/../../../personal--graphics-engine/scripts/compile_shaders_dx12.py" />
       <option name="PARAMETERS" value="" />
+      <option name="SHOW_COMMAND_LINE" value="false" />
+      <option name="EMULATE_TERMINAL" value="false" />
+      <option name="MODULE_MODE" value="false" />
+      <option name="REDIRECT_INPUT" value="false" />
+      <option name="INPUT_FILE" value="" />
+      <method v="2" />
+    </configuration>
+    <configuration name="compute" type="PythonConfigurationType" factoryName="Python">
+      <module name="unitTests" />
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <envs>
+        <env name="PYTHONUNBUFFERED" value="1" />
+        <env name="PYTHONPATH" value="../../pynodegl;../../pynodegl-utils;../../../scripts" />
+        <env name="DATA_PATH" value="../../../cmake-build-debug" />
+        <env name="PLATFORM" value="WIN32" />
+        <env name="Path" value="C:\VulkanSDK\1.2.131.2\Bin;%PATH%" />
+      </envs>
+      <option name="SDK_HOME" value="C:\Users\jmoguillansky\AppData\Local\Programs\Python\Python38\python_d.exe" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$" />
+      <option name="IS_MODULE_SDK" value="false" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/../../nodegl-env/bin/ngl-test" />
+      <option name="PARAMETERS" value="compute.py compute_particules refs/compute_particules.ref" />
       <option name="SHOW_COMMAND_LINE" value="false" />
       <option name="EMULATE_TERMINAL" value="false" />
       <option name="MODULE_MODE" value="false" />
@@ -211,6 +243,7 @@
       <item itemvalue="Python.transform" />
       <item itemvalue="Python.texture" />
       <item itemvalue="Python.data" />
+      <item itemvalue="Python.compute" />
     </list>
   </component>
   <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
@@ -237,10 +270,10 @@
     <option name="oldMeFiltersMigrated" value="true" />
   </component>
   <component name="WindowStateProjectService">
-    <state x="688" y="73" width="1092" height="763" key="#com.intellij.execution.impl.EditConfigurationsDialog" timestamp="1598552197686">
+    <state x="688" y="73" width="1092" height="763" key="#com.intellij.execution.impl.EditConfigurationsDialog" timestamp="1598569497528">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
-    <state x="688" y="73" width="1092" height="763" key="#com.intellij.execution.impl.EditConfigurationsDialog/-1280.65.1280.984/0.0.1920.1040@0.0.1920.1040" timestamp="1598552197686" />
+    <state x="688" y="73" width="1092" height="763" key="#com.intellij.execution.impl.EditConfigurationsDialog/-1280.65.1280.984/0.0.1920.1040@0.0.1920.1040" timestamp="1598569497528" />
     <state width="1554" height="466" key="DebuggerActiveHint" timestamp="1598554174652">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
@@ -253,22 +286,22 @@
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
     <state x="578" y="317" key="FileChooserDialogImpl/-1280.65.1280.984/0.0.1920.1040@0.0.1920.1040" timestamp="1598552318001" />
-    <state width="1899" height="280" key="GridCell.Tab.0.bottom" timestamp="1598555092609">
+    <state width="1899" height="280" key="GridCell.Tab.0.bottom" timestamp="1598558291568">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
-    <state width="1899" height="280" key="GridCell.Tab.0.bottom/-1280.65.1280.984/0.0.1920.1040@0.0.1920.1040" timestamp="1598555092609" />
-    <state width="1899" height="280" key="GridCell.Tab.0.center" timestamp="1598555092609">
+    <state width="1899" height="280" key="GridCell.Tab.0.bottom/-1280.65.1280.984/0.0.1920.1040@0.0.1920.1040" timestamp="1598558291568" />
+    <state width="1899" height="280" key="GridCell.Tab.0.center" timestamp="1598558291568">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
-    <state width="1899" height="280" key="GridCell.Tab.0.center/-1280.65.1280.984/0.0.1920.1040@0.0.1920.1040" timestamp="1598555092609" />
-    <state width="1899" height="280" key="GridCell.Tab.0.left" timestamp="1598555092609">
+    <state width="1899" height="280" key="GridCell.Tab.0.center/-1280.65.1280.984/0.0.1920.1040@0.0.1920.1040" timestamp="1598558291568" />
+    <state width="1899" height="280" key="GridCell.Tab.0.left" timestamp="1598558291568">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
-    <state width="1899" height="280" key="GridCell.Tab.0.left/-1280.65.1280.984/0.0.1920.1040@0.0.1920.1040" timestamp="1598555092609" />
-    <state width="1899" height="280" key="GridCell.Tab.0.right" timestamp="1598555092609">
+    <state width="1899" height="280" key="GridCell.Tab.0.left/-1280.65.1280.984/0.0.1920.1040@0.0.1920.1040" timestamp="1598558291568" />
+    <state width="1899" height="280" key="GridCell.Tab.0.right" timestamp="1598558291568">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
-    <state width="1899" height="280" key="GridCell.Tab.0.right/-1280.65.1280.984/0.0.1920.1040@0.0.1920.1040" timestamp="1598555092609" />
+    <state width="1899" height="280" key="GridCell.Tab.0.right/-1280.65.1280.984/0.0.1920.1040@0.0.1920.1040" timestamp="1598558291568" />
     <state width="1899" height="243" key="GridCell.Tab.1.bottom" timestamp="1598554782178">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
