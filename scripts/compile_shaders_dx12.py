@@ -6,7 +6,7 @@ def applyPatches(patchFiles, outDir):
         filename = os.path.basename(patchFile)[:-6]
         print('filename: ',filename)
         outFile = os.path.normpath(f"{outDir}/{filename}")
-        if os.path.exists(patchFile):
+        if os.path.exists(outFile):
             print(f"applying patch: {patchFile}")
             cmdStr = f"{patch} -N -u {outFile} -i {patchFile}"
             cmd(cmdStr)
