@@ -29,10 +29,16 @@
 using namespace ngfx;
 
 void D3DGraphics::bindComputePipeline(CommandBuffer* commandBuffer, ComputePipeline* computePipeline) {
+    auto d3dCtx = d3d(ctx);
+
     auto d3dCommandList = d3d(commandBuffer)->v;
     auto d3dComputePipeline = d3d(computePipeline);
     D3D_TRACE(d3dCommandList->SetPipelineState(d3dComputePipeline->d3dPipelineState.Get()));
     D3D_TRACE(d3dCommandList->SetComputeRootSignature(d3dComputePipeline->d3dRootSignature.Get()));
+    auto cbvSrvUavHeap = d3dCtx->d3dCbvSrvUavDescriptorHeap.v.Get();
+    auto samplerDescriptorHeap = d3dCtx->d3dSamplerDescriptorHeap.v.Get();
+    std::vector<ID3D12DescriptorHeap*> descriptorHeaps = { cbvSrvUavHeap, samplerDescriptorHeap };
+    D3D_TRACE(d3dCommandList->SetDescriptorHeaps(UINT(descriptorHeaps.size()), descriptorHeaps.data()));
     currentPipeline = computePipeline;
 }
 
