@@ -49,7 +49,7 @@ ComputePipeline* ComputePipeline::create(GraphicsContext* graphicsContext,
     std::map<uint32_t, ShaderModule::DescriptorInfo> descriptors;
     for (auto& csDescriptor : cs->descriptors) descriptors[csDescriptor.set] = csDescriptor;
     descriptorBindings.resize(numDescriptors);
-    D3DPipelineUtil::parseDescriptors(descriptors, descriptorBindings, d3dRootParams, d3dDescriptorRanges);
+    D3DPipelineUtil::parseDescriptors(descriptors, descriptorBindings, d3dRootParams, d3dDescriptorRanges, D3DPipelineUtil::PIPELINE_TYPE_COMPUTE);
 
     d3dComputePipeline->create(d3d(graphicsContext), d3dRootParams, d3d(cs)->d3dShaderByteCode);
     return d3dComputePipeline;

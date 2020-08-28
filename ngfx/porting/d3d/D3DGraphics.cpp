@@ -28,7 +28,6 @@
 #include <glm/gtc/type_ptr.hpp>
 using namespace ngfx;
 
-
 void D3DGraphics::bindComputePipeline(CommandBuffer* commandBuffer, ComputePipeline* computePipeline) {
     auto d3dCommandList = d3d(commandBuffer)->v;
     auto d3dComputePipeline = d3d(computePipeline);
@@ -68,7 +67,7 @@ void D3DGraphics::bindIndexBuffer(CommandBuffer* commandBuffer, Buffer* buffer) 
     d3d(commandBuffer)->v->IASetIndexBuffer(&ib);
 }
 
-void D3DGraphics::bindVertexBuffer(CommandBuffer* commandBuffer, Buffer* buffer, uint32_t location) {
+void D3DGraphics::bindVertexBuffer(CommandBuffer* commandBuffer, Buffer* buffer, uint32_t location) { //TODO: pass stride as parameter instead of member variable
     auto d3dBuffer = d3d(buffer);
     D3D12_VERTEX_BUFFER_VIEW vb;
     vb.BufferLocation = d3dBuffer->v->GetGPUVirtualAddress();
@@ -81,8 +80,9 @@ void D3DGraphics::bindVertexBuffer(CommandBuffer* commandBuffer, Buffer* buffer,
 void D3DGraphics::bindStorageBuffer(CommandBuffer* commandBuffer, Buffer* buffer, uint32_t binding, ShaderStageFlags shaderStageFlags) {
     auto d3dCommandList = d3d(commandBuffer)->v.Get();
     auto d3dBuffer = d3d(buffer);
+    //TODO encode access flags as read-only or read-write
     if (D3DGraphicsPipeline* graphicsPipeline = dynamic_cast<D3DGraphicsPipeline*>(currentPipeline)) {
-        D3D_TRACE(d3dCommandList->SetGraphicsRootUnorderedAccessView(binding, d3dBuffer->v->GetGPUVirtualAddress()));
+        D3D_TRACE(d3dCommandList->SetGraphicsRootShaderResourceView(binding, d3dBuffer->v->GetGPUVirtualAddress()));
     }
     else if (D3DComputePipeline* computePipeline = dynamic_cast<D3DComputePipeline*>(currentPipeline)) {
         D3D_TRACE(d3dCommandList->SetComputeRootUnorderedAccessView(binding, d3dBuffer->v->GetGPUVirtualAddress()));
@@ -92,8 +92,14 @@ void D3DGraphics::bindStorageBuffer(CommandBuffer* commandBuffer, Buffer* buffer
 void D3DGraphics::bindTexture(CommandBuffer* commandBuffer, Texture* texture, uint32_t set) {
     auto d3dCommandList = d3d(commandBuffer)->v.Get();
     auto d3dTexture = d3d(texture);
-    D3D_TRACE(d3dCommandList->SetGraphicsRootDescriptorTable(set, d3dTexture->defaultSrvDescriptor.gpuHandle));
-    D3D_TRACE(d3dCommandList->SetGraphicsRootDescriptorTable(set + 1, d3dTexture->defaultSamplerDescriptor.gpuHandle));
+    if (D3DGraphicsPipeline* graphicsPipeline = dynamic_cast<D3DGraphicsPipeline*>(currentPipeline)) {
+        D3D_TRACE(d3dCommandList->SetGraphicsRootDescriptorTable(set, d3dTexture->defaultSrvDescriptor.gpuHandle));
+        D3D_TRACE(d3dCommandList->SetGraphicsRootDescriptorTable(set + 1, d3dTexture->defaultSamplerDescriptor.gpuHandle));
+    }
+    else if (D3DComputePipeline* computePipeline = dynamic_cast<D3DComputePipeline*>(currentPipeline)) {
+        D3D_TRACE(d3dCommandList->SetComputeRootDescriptorTable(set, d3dTexture->defaultSrvDescriptor.gpuHandle));
+        D3D_TRACE(d3dCommandList->SetComputeRootDescriptorTable(set + 1, d3dTexture->defaultSamplerDescriptor.gpuHandle));
+    }
 }
 
 static void resourceBarrier(D3DCommandList* cmdList, D3DFramebuffer::D3DAttachment* p, 

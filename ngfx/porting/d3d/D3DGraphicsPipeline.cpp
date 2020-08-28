@@ -138,7 +138,7 @@ GraphicsPipeline* GraphicsPipeline::create(GraphicsContext* graphicsContext, con
     uint32_t numDescriptors = descriptors.size();
     descriptorBindings.resize(numDescriptors);
 
-    D3DPipelineUtil::parseDescriptors(descriptors, descriptorBindings, d3dRootParams, d3dDescriptorRanges);
+    D3DPipelineUtil::parseDescriptors(descriptors, descriptorBindings, d3dRootParams, d3dDescriptorRanges, D3DPipelineUtil::PIPELINE_TYPE_GRAPHICS);
 
     std::vector<D3D12_INPUT_ELEMENT_DESC> d3dVertexInputAttributes(vs->attributes.size());
     auto& vertexAttributeBindings = d3dGraphicsPipeline->vertexAttributeBindings;
