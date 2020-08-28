@@ -83,7 +83,6 @@ def compute_particules(cfg):
     time = ngl.AnimatedFloat(animkf)
     duration = ngl.UniformFloat(cfg.duration)
 
-    group_size = nb_particules / local_size
     program = ngl.ComputeProgram(compute_shader)
     compute = ngl.Compute(nb_particules / ( local_size * local_size), 1, 1, program)
     compute.update_uniforms(time=time, duration=duration)
