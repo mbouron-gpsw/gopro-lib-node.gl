@@ -47,9 +47,10 @@ void D3DShaderModule::compile(const std::string& filename) {
     std::string target;
     if (strstr(filename.c_str(), "vert")) target = "vs_5_1";
     else if (strstr(filename.c_str(), "frag")) target = "ps_5_1";
+    else if (strstr(filename.c_str(), "comp")) target = "cs_5_1";
     hResult = D3DCompileFromFile(StringUtil::toWString(filename).c_str(), nullptr, nullptr, "main", target.c_str(), compileFlags, 0, &byteCode, &errorBlob);
     if (errorBlob) {
-        ERR("%s", (char*)errorBlob->GetBufferPointer());
+        ERR("%s %s", (char*)errorBlob->GetBufferPointer(), filename.c_str());
     }
     V0(hResult, "%s", filename.c_str());
     initFromByteCode(byteCode->GetBufferPointer(), uint32_t(byteCode->GetBufferSize()));
