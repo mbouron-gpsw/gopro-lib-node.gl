@@ -50,9 +50,9 @@ def compute_particules(cfg):
         local_size=local_size,
         nb_particules=nb_particules,
     )
-    compute_shader = _PARTICULES_COMPUTE % shader_data
-    vertex_shader = _PARTICULES_VERT % shader_data
-    fragment_shader = _PARTICULES_FRAG % shader_data
+    compute_shader = _PARTICULES_COMPUTE
+    vertex_shader = _PARTICULES_VERT
+    fragment_shader = _PARTICULES_FRAG
 
     positions = array.array('f')
     velocities = array.array('f')
@@ -85,7 +85,7 @@ def compute_particules(cfg):
 
     group_size = nb_particules / local_size
     program = ngl.ComputeProgram(compute_shader)
-    compute = ngl.Compute(nb_particules, 1, 1, program)
+    compute = ngl.Compute(nb_particules / ( local_size * local_size), 1, 1, program)
     compute.update_uniforms(time=time, duration=duration)
     compute.update_blocks(ipositions_buffer=ipositions, opositions_buffer=opositions)
 

@@ -28,7 +28,6 @@
 #include <glm/gtc/type_ptr.hpp>
 using namespace ngfx;
 
-
 void D3DGraphics::bindComputePipeline(CommandBuffer* commandBuffer, ComputePipeline* computePipeline) {
     auto d3dCommandList = d3d(commandBuffer)->v;
     auto d3dComputePipeline = d3d(computePipeline);
