@@ -231,12 +231,12 @@
     <list>
       <item itemvalue="Python.anim" />
       <item itemvalue="Python.blending" />
-      <item itemvalue="Python.rtt" />
       <item itemvalue="Python.compile_shaders_dx12" />
-      <item itemvalue="Python.transform" />
-      <item itemvalue="Python.texture" />
-      <item itemvalue="Python.data" />
       <item itemvalue="Python.compute" />
+      <item itemvalue="Python.data" />
+      <item itemvalue="Python.rtt" />
+      <item itemvalue="Python.texture" />
+      <item itemvalue="Python.transform" />
     </list>
   </component>
   <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
