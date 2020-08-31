@@ -34,6 +34,8 @@ Framebuffer* Framebuffer::create(Device* device, RenderPass* renderPass,
             else {
                 colorAttachment.texture = mtlTexture->v;
             }
+            colorAttachment.slice = attachment.layer;
+            colorAttachment.level = attachment.level;
             colorAttachments.emplace_back(std::move(colorAttachment));
             continue;
         }

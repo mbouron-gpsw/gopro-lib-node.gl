@@ -15,16 +15,18 @@ void MTLGraphicsPipeline::create(MTLGraphicsContext* ctx, const State& state, MT
     pipelineStateDescriptor.label = @"";
     pipelineStateDescriptor.vertexFunction = shaders.VS;
     pipelineStateDescriptor.fragmentFunction = shaders.PS;
-    auto colorAttachment = pipelineStateDescriptor.colorAttachments[0];
-    colorAttachment.pixelFormat = colorFormat;
-    colorAttachment.blendingEnabled = state.blendEnable;
-    colorAttachment.sourceRGBBlendFactor = ::MTLBlendFactor(state.blendSrcFactor);
-    colorAttachment.sourceAlphaBlendFactor = ::MTLBlendFactor(state.blendSrcFactor);
-    colorAttachment.destinationRGBBlendFactor = ::MTLBlendFactor(state.blendDstFactor);
-    colorAttachment.destinationAlphaBlendFactor = ::MTLBlendFactor(state.blendDstFactor);
-    colorAttachment.rgbBlendOperation = ::MTLBlendOperation(state.blendOp);
-    colorAttachment.alphaBlendOperation = ::MTLBlendOperation(state.blendOp);
-    colorAttachment.writeMask = state.colorWriteMask;
+    for (uint32_t j = 0; j<state.numColorAttachments; j++) {
+        auto colorAttachment = pipelineStateDescriptor.colorAttachments[j];
+        colorAttachment.pixelFormat = colorFormat;
+        colorAttachment.blendingEnabled = state.blendEnable;
+        colorAttachment.sourceRGBBlendFactor = ::MTLBlendFactor(state.blendSrcFactor);
+        colorAttachment.sourceAlphaBlendFactor = ::MTLBlendFactor(state.blendSrcFactor);
+        colorAttachment.destinationRGBBlendFactor = ::MTLBlendFactor(state.blendDstFactor);
+        colorAttachment.destinationAlphaBlendFactor = ::MTLBlendFactor(state.blendDstFactor);
+        colorAttachment.rgbBlendOperation = ::MTLBlendOperation(state.blendOp);
+        colorAttachment.alphaBlendOperation = ::MTLBlendOperation(state.blendOp);
+        colorAttachment.writeMask = state.colorWriteMask;
+    }
     
     pipelineStateDescriptor.rasterSampleCount = state.numSamples;
     pipelineStateDescriptor.vertexDescriptor = vertexDescriptor;

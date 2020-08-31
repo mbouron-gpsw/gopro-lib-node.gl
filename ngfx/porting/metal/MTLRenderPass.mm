@@ -1,27 +1,35 @@
 #include "porting/metal/MTLRenderPass.h"
 #include "porting/metal/MTLGraphicsContext.h"
 using namespace ngfx;
+using namespace std;
 
 MTLRenderPassDescriptor* MTLRenderPass::getDescriptor(MTLGraphicsContext* mtlCtx, MTLFramebuffer* mtlFramebuffer,
        glm::vec4 clearColor, float clearDepth, uint32_t clearStencil) {
     MTLRenderPassDescriptor* mtlRenderPassDescriptor;
-    MTLRenderPassColorAttachmentDescriptor *colorAttachment = nullptr;
+    vector<MTLRenderPassColorAttachmentDescriptor*> colorAttachments;
     if (mtlFramebuffer->colorAttachments.empty()) {
         auto view = mtlCtx->mtkView;
         mtlRenderPassDescriptor = view.currentRenderPassDescriptor;
-        colorAttachment = mtlRenderPassDescriptor.colorAttachments[0];
+        colorAttachments.push_back(mtlRenderPassDescriptor.colorAttachments[0]);
     } else {
         mtlRenderPassDescriptor = [MTLRenderPassDescriptor renderPassDescriptor];
-        colorAttachment = mtlRenderPassDescriptor.colorAttachments[0];
-        colorAttachment.texture = mtlFramebuffer->colorAttachments[0].texture;
-        colorAttachment.resolveTexture = mtlFramebuffer->colorAttachments[0].resolveTexture;
+        for (uint32_t j = 0; j<mtlFramebuffer->colorAttachments.size(); j++) {
+            auto colorAttachment = mtlRenderPassDescriptor.colorAttachments[j];
+            auto& fbColorAttachment = mtlFramebuffer->colorAttachments[j];
+            colorAttachment.texture = fbColorAttachment.texture;
+            colorAttachment.resolveTexture = fbColorAttachment.resolveTexture;
+            colorAttachment.slice = fbColorAttachment.slice;
+            colorAttachment.level = fbColorAttachment.level;
+            colorAttachments.push_back(colorAttachment);
+        }
     }
-    colorAttachment.clearColor = { clearColor[0], clearColor[1], clearColor[2], clearColor[3] };
-    colorAttachment.loadAction = MTLLoadActionClear;
-    if (colorAttachment.resolveTexture)
-        colorAttachment.storeAction = MTLStoreActionStoreAndMultisampleResolve;
-    else colorAttachment.storeAction = MTLStoreActionStore;
-
+    for (auto& colorAttachment : colorAttachments) {
+        colorAttachment.clearColor = { clearColor[0], clearColor[1], clearColor[2], clearColor[3] };
+        colorAttachment.loadAction = MTLLoadActionClear;
+        if (colorAttachment.resolveTexture)
+            colorAttachment.storeAction = MTLStoreActionStoreAndMultisampleResolve;
+        else colorAttachment.storeAction = MTLStoreActionStore;
+    }
     auto depthAttachment = mtlRenderPassDescriptor.depthAttachment;
     if (mtlFramebuffer->depthAttachment) {
         depthAttachment.clearDepth = clearDepth;
