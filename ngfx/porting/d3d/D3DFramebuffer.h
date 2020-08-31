@@ -23,6 +23,7 @@
 #include "porting/d3d/D3DUtil.h"
 
 namespace ngfx {
+    class D3DTexture;
     class D3DFramebuffer : public Framebuffer {
     public:
         struct D3DAttachment { 
@@ -32,6 +33,7 @@ namespace ngfx {
             uint32_t imageUsageFlags = 0;
             uint32_t numSamples = 1;
             DXGI_FORMAT format = DXGI_FORMAT_UNKNOWN;
+            D3DTexture* texture = nullptr;
         };
         void create(std::vector<D3DAttachment>& attachments, int32_t w, uint32_t h, uint32_t layers = 1);
         virtual ~D3DFramebuffer() {}

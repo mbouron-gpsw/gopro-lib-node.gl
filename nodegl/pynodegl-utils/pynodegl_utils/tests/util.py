@@ -25,7 +25,7 @@ from shader_tools import *
 import hashlib
 import os
 
-GRAPHICS_BACKEND='direct3d12' #TODO: use environment variable
+GRAPHICS_BACKEND=os.getenv("GRAPHICS_BACKEND")
 NGFX_DIR= os.path.abspath('../../..')
 TMP_DIR = os.getenv("TEMP")
 
@@ -41,6 +41,12 @@ def compile_program(vertex, fragment):
         defines='-DGRAPHICS_BACKEND_METAL=1'
     elif GRAPHICS_BACKEND == 'direct3d12':
         defines='-DGRAPHICS_BACKEND_DIRECT3D12'
+    else:
+        print('ERROR: GRAPHICS_BACKEND environment variable not set')
+        return 1
+    if not TMP_DIR:
+        print('ERROR: TEMP environment variable not set')
+        return 1
     if not (os.path.exists(f"{TMP_DIR}/{vertexFile}") and os.path.exists(f"{TMP_DIR}/{fragmentFile}")):
         outFile = open(f"{TMP_DIR}/{vertexFile}", 'w')
         outFile.write(vertex)

@@ -30,7 +30,7 @@
 #include "porting/d3d/D3DComputePass.h"
 #include "porting/d3d/D3DRenderPass.h"
 #include "porting/d3d/D3DFramebuffer.h"
-#include "porting/d3d/D3DDepthStencilView.h"
+#include "porting/d3d/D3DTexture.h"
 #include "porting/d3d/D3DUtil.h"
 #include "DebugUtil.h"
 #include <memory>
@@ -65,7 +65,7 @@ namespace ngfx {
         std::vector<D3DFence> d3dWaitFences;
         D3DFence d3dComputeFence;
         D3DComputePass d3dComputePass;
-        std::unique_ptr<D3DDepthStencilView> d3dDepthStencilView;
+        std::unique_ptr<D3DTexture> d3dDepthStencilView;
         bool offscreen = true;
         uint32_t numSamples = 1;
     private:

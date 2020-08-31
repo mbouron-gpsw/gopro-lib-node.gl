@@ -18,7 +18,7 @@ def findIncludeFile(includeFilename, includePaths):
         filename = f"{includePath}/{includeFilename}"
         if os.path.exists(filename): return filename
     return None
-    
+
 def preprocess(dataPath, inFile):
     contents = ''
     includePaths = ['ngfx/data/shaders', dataPath]
@@ -35,7 +35,7 @@ def preprocess(dataPath, inFile):
 def getmtime(fileName):
     if not os.path.exists(fileName): return 0
     return os.path.getmtime(fileName)
-    
+
 def compileShaderGLSL(file, defines, outDir, outFiles):
     inPath = os.path.dirname(file)
     filename = os.path.basename(file)
@@ -46,7 +46,7 @@ def compileShaderGLSL(file, defines, outDir, outFiles):
     targetTimeStamp = getmtime(outFileName)
     if srcTimeStamp <= targetTimeStamp:
         return 0
-        
+
     inFile = open(f"{inFileName}", 'r')
     outFile = open(os.path.normpath(f"{outDir}/{filename}"), 'w')
     contents = preprocess(inPath, inFile)
@@ -70,12 +70,12 @@ def convertShader(file, extraArgs, outDir, fmt, outFiles):
     targetTimeStamp = getmtime(outFileName)
     if srcTimeStamp <= targetTimeStamp:
         return 0
-        
+
     args = ('--msl' if fmt == 'msl' else "--hlsl --shader-model 60") + f" {extraArgs}"
-    spirv_cross='spirv-cross.exe' if PLATFORM_WIN32 else 'spirv-cross' 
+    spirv_cross='spirv-cross.exe' if PLATFORM_WIN32 else 'spirv-cross'
     result = cmd(f"{spirv_cross} {args} {inFileName} --output {outFileName}")
     if result == 0:
-        print(f"converted file: {file}")
+        print(f"converted file: {inFileName} to {outFileName}")
     else:
         print(f"ERROR: cannot convert file: {file}")
     return result
@@ -89,7 +89,7 @@ def compileShaderMTL(file, defines, outDir, outFiles):
     targetTimeStamp = getmtime(outFileName)
     if srcTimeStamp <= targetTimeStamp:
         return 0
-    debugFlags = '-gline-tables-only -MO' 
+    debugFlags = '-gline-tables-only -MO'
     result = cmd(
           f"xcrun -sdk macosx metal {debugFlags} -c {inFileName} -o {outDir}/{filename}.air && "
         + f"xcrun -sdk macosx metallib {outDir}/{filename}.air -o {outFileName}"
@@ -109,7 +109,7 @@ def compileShaderHLSL(file, defines, outDir, outFiles):
     targetTimeStamp = getmtime(outFileName)
     if srcTimeStamp <= targetTimeStamp:
         return 0
-    shaderModel = '' 
+    shaderModel = ''
     if '.vert' in inFileName: shaderModel = 'vs_5_0'
     elif '.frag' in inFileName: shaderModel = 'ps_5_0'
     elif '.comp' in inFileName: shaderModel = 'cs_5_0'
@@ -118,11 +118,11 @@ def compileShaderHLSL(file, defines, outDir, outFiles):
         print(f"compiled file: {file}")
     else:
         print(f"ERROR: cannot compile file: {file}")
-    return result    
+    return result
 
 def getDictEntry(dict, name):
     return dict[name] if name in dict else []
-    
+
 def getDictEntries(dict, names):
     entries = []
     for name in names: entries.append(getDictEntry(dict, name))
@@ -136,26 +136,26 @@ def genShaderReflectionGLSL(file, outDir):
     targetTimeStamp = getmtime(outFileName)
     if srcTimeStamp <= targetTimeStamp:
         return 0
-    spirv_cross='spirv-cross.exe' if PLATFORM_WIN32 else 'spirv-cross' 
+    spirv_cross='spirv-cross.exe' if PLATFORM_WIN32 else 'spirv-cross'
     result = cmd(f"{spirv_cross} {inFileName} --reflect --output {outFileName}")
-    
+
     inFileName = f"{outDir}/{filename}.spv.reflect"
     outFileName = f"{outDir}/{filename}.spv.reflect"
-    
-    inFile = open(f"{inFileName}", 'r')    
+
+    inFile = open(f"{inFileName}", 'r')
     reflectData = json.loads(inFile.read())
     inFile.close()
-    
+
     outFile = open(f"{outFileName}", 'w')
     contents = json.dumps(reflectData, sort_keys=True, indent=4, separators=(',', ': '))
     outFile.write(contents)
     outFile.close()
-    
+
     if result == 0:
         print(f"generated reflection map for file: {file}")
     else:
         print(f"ERROR: cannot generate reflection map for file: {file}")
-    
+
     return result
 
 def findMetalReflectData(metalReflectData, name):
@@ -182,8 +182,11 @@ def patchShaderReflectionDataMSL(file, reflectData, ext):
         inputs = getDictEntry(reflectData, 'inputs')
         for input in inputs:
             metalInputReflectData = findMetalReflectData(metalReflectData['attributes'], input['name'])
+            if not metalInputReflectData:
+                print(f"ERROR: cannot patch shader reflection data for file: {file}, reflectData: ", metalReflectData['attributes'], 'input name: ',input['name'])
+                return None
             input['location'] = int(metalInputReflectData[2]) + numDescriptors
-            
+
     #update descriptor bindings
     for descriptor in textures:
         metalTextureReflectData = findMetalReflectData(metalReflectData['textures'], descriptor['name'])
@@ -197,14 +200,14 @@ def patchShaderReflectionDataMSL(file, reflectData, ext):
     for descriptor in images:
         metalTextureReflectData = findMetalReflectData(metalReflectData['textures'], descriptor['name'])
         descriptor['set'] = int(metalTextureReflectData[2])
-    
+
     return reflectData
 
 def patchShaderReflectionDataHLSL(file, reflectData, ext):
     hlslFile = open(f"{file}", 'r')
     hlslContents = hlslFile.read()
     hlslReflectData = {}
-    
+
     #parse semantics
     if ext == '.vert':
         inputs = getDictEntry(reflectData, 'inputs')
@@ -233,8 +236,8 @@ def patchShaderReflectionDataHLSL(file, reflectData, ext):
 
     hlslFile.close()
 
-    return reflectData    
-     
+    return reflectData
+
 def genShaderReflectionMSL(file, outDir):
     result = 0
     filename = os.path.splitext(os.path.basename(file))[0]
@@ -244,25 +247,28 @@ def genShaderReflectionMSL(file, outDir):
     targetTimeStamp = getmtime(outFileName)
     if srcTimeStamp <= targetTimeStamp:
         return 0
-        
+
     inFile = open(f"{inFileName}", 'r')
     reflectData = json.loads(inFile.read())
     inFile.close()
-    
+
     ext = os.path.splitext(filename)[1]
     reflectData = patchShaderReflectionDataMSL(file, reflectData, ext)
-    
+    if not reflectData:
+        print(f"ERROR: cannot generate reflection map for file: {file}")
+        return 1
+        
     outFile = open(f"{outFileName}", 'w')
     contents = json.dumps(reflectData, sort_keys=True, indent=4, separators=(',', ': '))
     outFile.write(contents)
     outFile.close()
-    
+
     if result == 0:
         print(f"generated reflection map for file: {file}")
     else:
         print(f"ERROR: cannot generate reflection map for file: {file}")
-        
-    return 0
+
+    return result
 
 def genShaderReflectionHLSL(file, outDir):
     result = 0
@@ -273,25 +279,25 @@ def genShaderReflectionHLSL(file, outDir):
     targetTimeStamp = getmtime(outFileName)
     if srcTimeStamp <= targetTimeStamp:
         return 0
-        
+
     inFile = open(f"{inFileName}", 'r')
     reflectData = json.loads(inFile.read())
     inFile.close()
-    
+
     ext = os.path.splitext(filename)[1]
     reflectData = patchShaderReflectionDataHLSL(file, reflectData, ext)
-    
+
     outFile = open(f"{outFileName}", 'w')
     contents = json.dumps(reflectData, sort_keys=True, indent=4, separators=(',', ': '))
     outFile.write(contents)
     outFile.close()
-    
+
     if result == 0:
         print(f"generated reflection map for file: {file}")
     else:
         print(f"ERROR: cannot generate reflection map for file: {file}")
-        
-    return 0    
+
+    return 0
 
 def parseReflectionData(reflectData, ext):
     contents = ''
@@ -387,13 +393,13 @@ def parseReflectionData(reflectData, ext):
     for bufferInfo in shaderStorageBufferInfos:
         contents += processBufferInfos(bufferInfo)
     return contents
-    
+
 def generateShaderMapGLSL(file, outDir, outFiles):
     genShaderReflectionGLSL(file, outDir)
     dataPath = os.path.dirname(file)
     filename = os.path.basename(file)
     ext = os.path.splitext(filename)[1]
-    
+
     inFileName = f"{outDir}/{filename}.spv.reflect"
     outFileName = f"{outDir}/{filename}.spv.map"
     srcTimeStamp = getmtime(inFileName)
@@ -402,7 +408,7 @@ def generateShaderMapGLSL(file, outDir, outFiles):
         return 0
     inFile = open(f"{inFileName}", 'r')
     outFile = open(f"{outFileName}", 'w')
-    
+
     reflectData = json.loads(inFile.read())
     contents = parseReflectionData(reflectData, ext)
 
@@ -410,13 +416,13 @@ def generateShaderMapGLSL(file, outDir, outFiles):
     outFile.close()
     outFiles.append(outFileName)
     return 0
-    
+
 def generateShaderMapMSL(file, outDir, outFiles):
     genShaderReflectionMSL(file, outDir)
     dataPath = os.path.dirname(file)
     filename = os.path.splitext(os.path.basename(file))[0]
     ext = os.path.splitext(filename)[1]
-    
+
     inFileName = f"{outDir}/{filename}.metal.reflect"
     outFileName = f"{outDir}/{filename}.metal.map"
     srcTimeStamp = getmtime(inFileName)
@@ -425,7 +431,7 @@ def generateShaderMapMSL(file, outDir, outFiles):
         return 0
     inFile = open(f"{inFileName}", 'r')
     outFile = open(f"{outFileName}", 'w')
-    
+
     reflectData = json.loads(inFile.read())
     contents = parseReflectionData(reflectData, ext)
 
@@ -433,13 +439,13 @@ def generateShaderMapMSL(file, outDir, outFiles):
     outFile.close()
     outFiles.append(outFileName)
     return 0
-    
+
 def generateShaderMapHLSL(file, outDir, outFiles):
     genShaderReflectionHLSL(file, outDir)
     dataPath = os.path.dirname(file)
     filename = os.path.splitext(os.path.basename(file))[0]
     ext = os.path.splitext(filename)[1]
-    
+
     inFileName = f"{outDir}/{filename}.hlsl.reflect"
     outFileName = f"{outDir}/{filename}.hlsl.map"
     srcTimeStamp = getmtime(inFileName)
@@ -448,7 +454,7 @@ def generateShaderMapHLSL(file, outDir, outFiles):
         return 0
     inFile = open(f"{inFileName}", 'r')
     outFile = open(f"{outFileName}", 'w')
-    
+
     reflectData = json.loads(inFile.read())
     inFile.close()
     contents = parseReflectionData(reflectData, ext)
@@ -456,7 +462,7 @@ def generateShaderMapHLSL(file, outDir, outFiles):
     outFile.write(contents)
     outFile.close()
     outFiles.append(outFileName)
-    return 0    
+    return 0
 
 def compileShadersGLSL(files, defines, outDir):
     outFiles = []
@@ -469,24 +475,24 @@ def compileShadersMSL(files, defines, outDir):
     for file in files:
         ret = compileShaderMTL(file, '', outDir, outFiles)
     return outFiles
-    
+
 def compileShadersHLSL(files, defines, outDir):
     outFiles = []
     for file in files:
         ret = compileShaderHLSL(file, '', outDir, outFiles)
-    return outFiles    
+    return outFiles
 
 def convertShaders(files, outDir, fmt):
     outFiles = []
     for file in files:
         ret = convertShader(file, '', outDir, fmt, outFiles)
-    return outFiles    
+    return outFiles
 
 def compileShaders(files, defines, outDir, fmt = 'glsl'):
     if fmt == 'glsl': return compileShadersGLSL(files, defines, outDir)
     elif fmt == 'msl': return compileShadersMSL(files, defines, outDir)
     elif fmt == 'hlsl': return compileShadersHLSL(files, defines, outDir)
-    
+
 def addFiles(paths, extensions):
     files = []
     for path in paths:
@@ -499,19 +505,19 @@ def generateShaderMapsGLSL(files, outDir):
     for file in files:
         ret = generateShaderMapGLSL(file, outDir, outFiles)
     return outFiles
-    
+
 def generateShaderMapsMSL(files, outDir):
     outFiles = []
     for file in files:
         ret = generateShaderMapMSL(file, outDir, outFiles)
-    return outFiles 
-    
+    return outFiles
+
 def generateShaderMapsHLSL(files, outDir):
     outFiles = []
     for file in files:
         ret = generateShaderMapHLSL(file, outDir, outFiles)
-    return outFiles        
-    
+    return outFiles
+
 def generateShaderMaps(files, outDir, fmt = 'glsl'):
     if fmt == 'glsl': return generateShaderMapsGLSL(files, outDir)
     elif fmt == 'msl': return generateShaderMapsMSL(files, outDir)

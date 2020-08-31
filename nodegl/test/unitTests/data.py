@@ -275,7 +275,7 @@ def _get_data_streamed_buffer_vec4_scene(cfg, scale, show_dbg_points):
         ]
         time_anim = ngl.AnimatedTime(kfs)
 
-    pts_data = array.array('l')
+    pts_data = array.array('q') #signed long long is 64 bit on windows python
     for i in range(duration):
         offset = 10000 if i == 0 else 0
         pts_data.extend([i * 1000000 + offset])
@@ -285,7 +285,7 @@ def _get_data_streamed_buffer_vec4_scene(cfg, scale, show_dbg_points):
         for j in range(data_size):
             v = i / float(duration) + j / float(data_size*duration)
             vec4_data.extend([v, v, v, v])
-
+    print('pts_buffer itemSize: ', pts_data.itemsize)
     pts_buffer = ngl.BufferInt64(data=pts_data)
     vec4_buffer = ngl.BufferVec4(data=vec4_data)
     streamed_buffer = ngl.StreamedBufferVec4(data_size, pts_buffer, vec4_buffer, time_anim=time_anim)

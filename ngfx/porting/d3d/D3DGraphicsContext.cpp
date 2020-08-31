@@ -31,6 +31,7 @@ void D3DGraphicsContext::create(const char* appName, bool enableDepthStencil, bo
     HRESULT hResult;
     this->debug = debug;
     this->enableDepthStencil = enableDepthStencil;
+    depthFormat = PIXELFORMAT_D16_UNORM;
     UINT dxgiFactoryFlags = 0;
     if (debug) {
         ComPtr<ID3D12Debug> debugController;
@@ -82,8 +83,13 @@ void D3DGraphicsContext::setSurface(Surface* surface) {
         TODO();
     }
     if (surface && enableDepthStencil) {
-        d3dDepthStencilView.reset(new D3DDepthStencilView());
-        d3dDepthStencilView->create(this, surface->w, surface->h);
+        d3dDepthStencilView.reset(
+            (D3DTexture*)Texture::create(
+                this, nullptr, nullptr, depthFormat, 
+                surface->w * surface->h * 4, surface->w, surface->h, 1, 1, 
+                IMAGE_USAGE_DEPTH_STENCIL_ATTACHMENT_BIT
+            )
+        );
         if (numSamples != 1) {
             TODO();
         }
@@ -143,7 +149,7 @@ void D3DGraphicsContext::createSwapchainFramebuffers(int w, int h) {
     // Create frame buffers for every swap chain image
     d3dSwapchainFramebuffers.resize(d3dSwapchain.numImages);
     for (uint32_t i = 0; i < d3dSwapchainFramebuffers.size(); i++) {
-        //TODO: add support for depth/stencil and MSAA
+        //TODO: add support for MSAA
         std::vector<D3DFramebuffer::D3DAttachment> attachments = {
             {
                 d3dSwapchain.renderTargets[i].Get(),
@@ -151,9 +157,21 @@ void D3DGraphicsContext::createSwapchainFramebuffers(int w, int h) {
                 0,
                 IMAGE_USAGE_COLOR_ATTACHMENT_BIT,
                 1,
-                DXGI_FORMAT(surfaceFormat)
+                DXGI_FORMAT(surfaceFormat),
+                nullptr
             }
         };
+        if (enableDepthStencil) {
+            attachments.push_back({
+                d3dDepthStencilView->v.Get(), 
+                d3dDepthStencilView->dsvDescriptor.cpuHandle,
+                0,
+                IMAGE_USAGE_DEPTH_STENCIL_ATTACHMENT_BIT,
+                1,
+                DXGI_FORMAT(depthFormat),
+                d3dDepthStencilView.get()
+            });
+        }
         d3dSwapchainFramebuffers[i].create(attachments, w, h);
     }
 }

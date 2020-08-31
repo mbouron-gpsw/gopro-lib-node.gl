@@ -48,7 +48,8 @@ void D3DPipelineUtil::parseDescriptors(
         std::map<uint32_t, ShaderModule::DescriptorInfo> &descriptors,
         std::vector<uint32_t> &descriptorBindings,
         std::vector<CD3DX12_ROOT_PARAMETER1> &d3dRootParams,
-        std::vector<std::unique_ptr<CD3DX12_DESCRIPTOR_RANGE1>> &d3dDescriptorRanges
+        std::vector<std::unique_ptr<CD3DX12_DESCRIPTOR_RANGE1>> &d3dDescriptorRanges,
+        PipelineType pipelineType
     ) {
     int registerSpace = 0;
     for (const auto& it : descriptors) {
@@ -75,7 +76,11 @@ void D3DPipelineUtil::parseDescriptors(
         }
         else if (descriptor.type == DESCRIPTOR_TYPE_STORAGE_BUFFER) {
             CD3DX12_ROOT_PARAMETER1 d3dDescriptor;
-            d3dDescriptor.InitAsShaderResourceView(0, registerSpace);
+            //TODO encode access flags as read-only or read-write
+            if (pipelineType == PIPELINE_TYPE_GRAPHICS) 
+                d3dDescriptor.InitAsShaderResourceView(0, registerSpace);
+            else
+                d3dDescriptor.InitAsUnorderedAccessView(0, registerSpace);
             d3dRootParams.emplace_back(std::move(d3dDescriptor));
         }
         else {

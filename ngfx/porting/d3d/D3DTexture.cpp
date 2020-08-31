@@ -39,6 +39,9 @@ void D3DTexture::create(D3DGraphicsContext* ctx, D3DGraphics* graphics, void* da
     if (genMipmaps) usageFlags |= IMAGE_USAGE_COLOR_ATTACHMENT_BIT;
     this->imageUsageFlags = usageFlags;
     this->numSamples = numSamples;
+    numSubresources = arrayLayers * mipLevels;
+    currentResourceState.resize(numSubresources);
+
     HRESULT hResult;
     D3D12_RESOURCE_FLAGS resourceFlags = D3D12_RESOURCE_FLAG_NONE;
     if (imageUsageFlags & IMAGE_USAGE_COLOR_ATTACHMENT_BIT) resourceFlags |= D3D12_RESOURCE_FLAG_ALLOW_RENDER_TARGET;
@@ -48,7 +51,10 @@ void D3DTexture::create(D3DGraphicsContext* ctx, D3DGraphics* graphics, void* da
         resourceDesc = CD3DX12_RESOURCE_DESC::Tex3D(format, w, h, d, 1, resourceFlags);
     }
     else {
-        resourceDesc = CD3DX12_RESOURCE_DESC::Tex2D(format, w, h, d * arrayLayers, mipLevels, numSamples, 0, resourceFlags);
+        auto texFormat = format;
+        if (texFormat == DXGI_FORMAT_D16_UNORM && (usageFlags & IMAGE_USAGE_SAMPLED_BIT)) texFormat = DXGI_FORMAT_R16_TYPELESS;
+        else if (texFormat == DXGI_FORMAT_D24_UNORM_S8_UINT && (usageFlags & IMAGE_USAGE_SAMPLED_BIT)) texFormat = DXGI_FORMAT_R24G8_TYPELESS;
+        resourceDesc = CD3DX12_RESOURCE_DESC::Tex2D(texFormat, w, h, d * arrayLayers, mipLevels, numSamples, 0, resourceFlags);
     }
     bool isRenderTarget = (resourceFlags & D3D12_RESOURCE_FLAG_ALLOW_RENDER_TARGET);
     D3D12_CLEAR_VALUE clearValue = { format, { 0.0f, 0.0f, 0.0f, 0.0f } };
@@ -59,6 +65,8 @@ void D3DTexture::create(D3DGraphicsContext* ctx, D3DGraphics* graphics, void* da
         D3D12_RESOURCE_STATE_COPY_DEST,
         isRenderTarget ? &clearValue : nullptr,
         IID_PPV_ARGS(&v)));
+
+    for (auto& s :currentResourceState) s = D3D12_RESOURCE_STATE_COPY_DEST;
 
     if (imageUsageFlags & IMAGE_USAGE_SAMPLED_BIT) {
         defaultSrvDescriptor = getSrvDescriptor(0, mipLevels);
@@ -80,7 +88,6 @@ void D3DTexture::create(D3DGraphicsContext* ctx, D3DGraphics* graphics, void* da
         ++dsvDescriptorHeap->handle;
     }
 
-    currentResourceState = D3D12_RESOURCE_STATE_COPY_DEST;
     upload(data, size);
 }
 
@@ -119,6 +126,8 @@ D3DDescriptorHandle D3DTexture::getSrvDescriptor(uint32_t baseMipLevel, uint32_t
     D3D12_SHADER_RESOURCE_VIEW_DESC srvDesc = {};
     srvDesc.Shader4ComponentMapping = D3D12_DEFAULT_SHADER_4_COMPONENT_MAPPING;
     srvDesc.Format = resourceDesc.Format;
+    if (srvDesc.Format == DXGI_FORMAT_R16_TYPELESS) srvDesc.Format = DXGI_FORMAT_R16_UNORM;
+    else if (srvDesc.Format == DXGI_FORMAT_R24G8_TYPELESS) srvDesc.Format = DXGI_FORMAT_R24_UNORM_X8_TYPELESS;
     srvDesc.ViewDimension = D3D12_SRV_DIMENSION(textureType);
     if (textureType == TEXTURE_TYPE_2D) {
         srvDesc.Texture2D.MostDetailedMip = baseMipLevel;
@@ -250,11 +259,8 @@ void D3DTexture::upload(void* data, uint32_t size, uint32_t x, uint32_t y, uint3
     D3D12_RESOURCE_STATES resourceState = (imageUsageFlags & IMAGE_USAGE_DEPTH_STENCIL_ATTACHMENT_BIT) ?
         D3D12_RESOURCE_STATE_DEPTH_WRITE :
         D3D12_RESOURCE_STATE_NON_PIXEL_SHADER_RESOURCE | D3D12_RESOURCE_STATE_PIXEL_SHADER_RESOURCE;
-    copyCommandList.v->ResourceBarrier(1, &CD3DX12_RESOURCE_BARRIER::Transition(
-        v.Get(), D3D12_RESOURCE_STATE_COPY_DEST, resourceState
-    ));
-    currentResourceState = resourceState;
-    copyCommandList.end();
+    resourceBarrier(&copyCommandList, resourceState);
+        copyCommandList.end();
     ctx->d3dCommandQueue.submit(copyCommandList.v.Get(), nullptr);
     ctx->d3dCommandQueue.waitIdle();
 
@@ -281,11 +287,7 @@ void D3DTexture::uploadFn(D3DCommandList* cmdList, void* data, uint32_t size, D3
         uint32_t x, uint32_t y, uint32_t z, int32_t w, int32_t h, int32_t d, int32_t arrayLayers) {
     if (data) {
         if (x != 0 || y != 0 || z != 0) LOG_TRACE("TODO: support sub-region update");
-        if (currentResourceState != D3D12_RESOURCE_STATE_COPY_DEST) {
-            cmdList->v->ResourceBarrier(1, &CD3DX12_RESOURCE_BARRIER::Transition(
-                v.Get(), currentResourceState, D3D12_RESOURCE_STATE_COPY_DEST
-            ));
-        }
+        resourceBarrier(cmdList, D3D12_RESOURCE_STATE_COPY_DEST);
         uint32_t rowPitch = size / (h * d * arrayLayers);
         uint32_t slicePitch = size / (d * arrayLayers);
         vector<D3D12_SUBRESOURCE_DATA> textureData(arrayLayers);
@@ -336,11 +338,7 @@ void D3DTexture::download(void* data, uint32_t size, uint32_t x, uint32_t y, uin
 
 void D3DTexture::downloadFn(D3DCommandList* cmdList, D3DReadbackBuffer& readbackBuffer, D3D12_BOX &srcRegion,
         D3D12_PLACED_SUBRESOURCE_FOOTPRINT &dstFootprint) {
-    if (currentResourceState != D3D12_RESOURCE_STATE_COPY_SOURCE) {
-        cmdList->v->ResourceBarrier(1, &CD3DX12_RESOURCE_BARRIER::Transition(
-            v.Get(), currentResourceState, D3D12_RESOURCE_STATE_COPY_SOURCE
-        ));
-    }
+    resourceBarrier(cmdList, D3D12_RESOURCE_STATE_COPY_SOURCE);
 
     D3D12_TEXTURE_COPY_LOCATION dstLocation = { readbackBuffer.v.Get(),      D3D12_TEXTURE_COPY_TYPE_PLACED_FOOTPRINT,  { dstFootprint } };
     D3D12_TEXTURE_COPY_LOCATION srcLocation = { v.Get(), D3D12_TEXTURE_COPY_TYPE_SUBRESOURCE_INDEX, 0 };
@@ -349,10 +347,32 @@ void D3DTexture::downloadFn(D3DCommandList* cmdList, D3DReadbackBuffer& readback
     D3D12_RESOURCE_STATES resourceState = (imageUsageFlags & IMAGE_USAGE_DEPTH_STENCIL_ATTACHMENT_BIT) ?
         D3D12_RESOURCE_STATE_DEPTH_WRITE :
         D3D12_RESOURCE_STATE_NON_PIXEL_SHADER_RESOURCE | D3D12_RESOURCE_STATE_PIXEL_SHADER_RESOURCE;
-    D3D_TRACE(cmdList->v->ResourceBarrier(1, &CD3DX12_RESOURCE_BARRIER::Transition(
-        v.Get(), D3D12_RESOURCE_STATE_COPY_SOURCE, resourceState
-    )));
-    currentResourceState = resourceState;
+    resourceBarrier(cmdList, resourceState);
+    for (auto& s : currentResourceState) s = resourceState;
+}
+
+void D3DTexture::changeLayout(CommandBuffer* commandBuffer, ImageLayout imageLayout) {
+    D3D12_RESOURCE_STATES resourceState;
+    switch (imageLayout) {
+    case IMAGE_LAYOUT_COLOR_ATTACHMENT_OPTIMAL: resourceState = D3D12_RESOURCE_STATE_RENDER_TARGET; break;
+    case IMAGE_LAYOUT_DEPTH_STENCIL_ATTACHMENT_OPTIMAL: resourceState = D3D12_RESOURCE_STATE_DEPTH_WRITE; break;
+    case IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL: resourceState = D3D12_RESOURCE_STATE_PIXEL_SHADER_RESOURCE | D3D12_RESOURCE_STATE_NON_PIXEL_SHADER_RESOURCE; break;
+    case IMAGE_LAYOUT_GENERAL: resourceState = D3D12_RESOURCE_STATE_COMMON; break;
+    };
+    
+    resourceBarrier(d3d(commandBuffer), resourceState);
+}
+void D3DTexture::resourceBarrier(D3DCommandList* cmdList, D3D12_RESOURCE_STATES newState, UINT subresource) {
+    uint32_t j0, j1;
+    if (subresource == D3D12_RESOURCE_BARRIER_ALL_SUBRESOURCES) { j0 = 0; j1 = numSubresources; }
+    else { j0 = subresource; j1 = j0 + 1; }
+    for (uint32_t j = j0; j < j1; j++) {
+        if (currentResourceState[j] == newState) continue;
+        D3D_TRACE(cmdList->v->ResourceBarrier(1, &CD3DX12_RESOURCE_BARRIER::Transition(
+            v.Get(), currentResourceState[j], newState, j
+        )));
+        currentResourceState[j] = newState;
+    }
 }
 
 Texture* Texture::create(GraphicsContext* ctx, Graphics* graphics, void* data, PixelFormat format, uint32_t size, uint32_t w, uint32_t h, uint32_t d, uint32_t arrayLayers,

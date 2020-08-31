@@ -66,7 +66,8 @@ Framebuffer* Framebuffer::create(Device* device, RenderPass* renderPass,
             attachment.layer * d3dTexture->mipLevels + attachment.level,
             d3dTexture->imageUsageFlags,
             d3dTexture->numSamples,
-            DXGI_FORMAT(d3dTexture->format)
+            DXGI_FORMAT(d3dTexture->format),
+            d3dTexture
         };
     }
     d3dFramebuffer->create(d3dAttachments, w, h, layers);

@@ -852,6 +852,10 @@ void RenderPriv::init(GraphicsContext *ctx, Graphics* graphics, GraphicsState st
     assert(B_POS != -1);
     B_NORMAL = graphicsProgram->getAttrLocation("ngl_normal");
     B_TEXCOORD = graphicsProgram->getAttrLocation("ngl_uvcoord");
+    auto& vsAttr = graphicsProgram->vs->attributes;
+    if (geom->bPos->stride == 0) geom->bPos->stride = vsAttr[B_POS].elementSize;
+    if (geom->bNormal && geom->bNormal->stride == 0) geom->bNormal->stride = vsAttr[B_NORMAL].elementSize;
+    if (geom->bTexCoord && geom->bTexCoord->stride == 0) geom->bTexCoord->stride = vsAttr[B_TEXCOORD].elementSize;
 }
 
 void RenderPriv::draw(CommandBuffer* commandBuffer, Graphics* graphics, GraphicsState state) {

@@ -21,6 +21,7 @@
 #pragma once
 #include "graphics/Texture.h"
 #include "DebugUtil.h"
+#include "porting/d3d/D3DBuffer.h"
 #include "porting/d3d/D3DDescriptorHandle.h"
 #include "porting/d3d/D3DSamplerDesc.h"
 #include "porting/d3d/D3DReadbackBuffer.h"
@@ -38,7 +39,9 @@ namespace ngfx {
 			int32_t w = -1, int32_t h = -1, int32_t d = -1, int32_t arrayLayers = -1) override;
 		void download(void* data, uint32_t size, uint32_t x = 0, uint32_t y = 0, uint32_t z = 0,
 			int32_t w = -1, int32_t h = -1, int32_t d = -1, int32_t arrayLayers = -1) override;
-		void changeLayout(CommandBuffer* commandBuffer, ImageLayout imageLayout) override {}
+		void changeLayout(CommandBuffer* commandBuffer, ImageLayout imageLayout) override;
+		void resourceBarrier(D3DCommandList* cmdList, D3D12_RESOURCE_STATES newState, 
+			UINT subresource = D3D12_RESOURCE_BARRIER_ALL_SUBRESOURCES);
 		void generateMipmaps(CommandBuffer* commandBuffer) override;
 		ComPtr<ID3D12Resource> v;
 		D3DDescriptorHandle getRtvDescriptor(uint32_t level = 0, uint32_t baseLayer = 0, uint32_t layerCount = 1);
@@ -61,7 +64,8 @@ namespace ngfx {
 		D3DGraphicsContext* ctx;
 		D3DGraphics* graphics;
 		uint32_t size;
-		D3D12_RESOURCE_STATES currentResourceState;
+		std::vector<D3D12_RESOURCE_STATES> currentResourceState;
+		uint32_t numSubresources = 0;
 		struct GenMipmapData {
 			std::vector<D3DBlitOp> ops;
 		};

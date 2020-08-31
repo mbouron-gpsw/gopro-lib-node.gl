@@ -6,3 +6,6 @@ rm cmake-build-debug/*.map
 rm cmake-build-debug/*.reflect
 rm cmake-build-debug/*.spv
 rm cmake-build-debug/*.dxc
+rm cmake-build-debug/*.air
+rm cmake-build-debug/*.metal
+rm cmake-build-debug/*.metallib

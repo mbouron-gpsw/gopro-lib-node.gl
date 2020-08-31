@@ -1,4 +1,6 @@
 cmake_minimum_required(VERSION 3.10)
+project (nodegl)
+set (NGFX_DIR ${CMAKE_CURRENT_SOURCE_DIR}/ngfx)
 
 set (CMAKE_CXX_STANDARD 17)
 set(CMAKE_POSITION_INDEPENDENT_CODE ON)
@@ -10,20 +12,34 @@ option (GRAPHICS_BACKEND_VULKAN "build vulkan backend" OFF)
 if (${CMAKE_SYSTEM_NAME} MATCHES "Windows")
     include_directories(external/win64/include)
     link_directories(external/win64/lib)
+else()    
+	include_directories(/usr/local/include)
 endif()
-
 include_directories(ngfx ngfx/src)
+
+if (${CMAKE_SYSTEM_NAME} MATCHES "Windows")
+	set (PYTHON_PATH C:\\Users\\$ENV{USERNAME}\\AppData\\Local\\Programs\\Python\\Python38) 
+	set (PYTHON_INCLUDE_PATH ${PYTHON_PATH}\\include)
+	set (PYTHON_LIBS python38_d)
+	set (PYTHON_LIB_PATH ${PYTHON_PATH}/libs)
+elseif (${CMAKE_SYSTEM_NAME} MATCHES "Darwin")
+	set (PYTHON_PATH /Applications/Xcode.app/Contents/Developer/Library/Frameworks/Python3.framework/Versions/3.7) 
+	set (PYTHON_INCLUDE_PATH ${PYTHON_PATH}/Headers)
+	set (PYTHON_LIBS python3.7)
+	set (PYTHON_LIB_PATH ${PYTHON_PATH}/lib)
+endif()
 
 function(build_test name)
 file (GLOB_RECURSE TEST_SOURCE_FILES test/${name}/*.cpp test/${name}/*.h test/${name}/*.mm)
 if (GRAPHICS_BACKEND_METAL)
-add_executable(${name} ${TEST_SOURCE_FILES} ${APP_BACKEND_SOURCE_FILES} ngfx/porting/appkit/Main.storyboard)
-set(RESOURCE_FILES ngfx/porting/appkit/Info.plist ngfx/porting/appkit/Main.storyboard)
+MESSAGE(STATUS "test: ${name} app backend src: ${APP_BACKEND_SOURCE_FILES}")
+add_executable(${name} ${TEST_SOURCE_FILES} ${APP_BACKEND_SOURCE_FILES} ${NGFX_DIR}/porting/appkit/Main.storyboard)
+set(RESOURCE_FILES ${NGFX_DIR}/porting/appkit/Info.plist ${NGFX_DIR}/porting/appkit/Main.storyboard)
 set_target_properties(${name} PROPERTIES
     MACOSX_BUNDLE TRUE
     MACOSX_FRAMEWORK_IDENTIFIER org.gopro.ngfx
     RESOURCE "${RESOURCE_FILES}"
-    MACOSX_BUNDLE_INFO_PLIST ngfx/porting/appkit/Info.plist
+    MACOSX_BUNDLE_INFO_PLIST ${NGFX_DIR}/porting/appkit/Info.plist
 )
 else()
 add_executable(${name} ${TEST_SOURCE_FILES})

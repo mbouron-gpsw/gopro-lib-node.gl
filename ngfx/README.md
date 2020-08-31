@@ -1,8 +1,8 @@
 # NGFX Graphics Abstraction API
 NGFX is a low-level graphics abstraction API on top of Vulkan, DirectX12, and Metal.  
-It exposes the benefits of next-generation graphics middleware APIs while providing a common
+It exposes the benefits of next-generation graphics technology via a common
 platform abstraction API.  It also supports optional access to the backend data structures,
-and enables platform specific optimizations.
+enabling platform specific optimizations.
 
 ## Architecture
 
