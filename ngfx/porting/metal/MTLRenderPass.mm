@@ -20,6 +20,8 @@ MTLRenderPassDescriptor* MTLRenderPass::getDescriptor(MTLGraphicsContext* mtlCtx
             colorAttachment.resolveTexture = fbColorAttachment.resolveTexture;
             colorAttachment.slice = fbColorAttachment.slice;
             colorAttachment.level = fbColorAttachment.level;
+            colorAttachment.resolveSlice = fbColorAttachment.resolveSlice;
+            colorAttachment.resolveLevel = fbColorAttachment.resolveLevel;
             colorAttachments.push_back(colorAttachment);
         }
     }
