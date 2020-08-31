@@ -12,3 +12,4 @@ nodegl/pynodegl/*.cpp
 nodegl/pynodegl/build/*
 nodegl/pynodegl/*.pyd
 nodegl/pynodegl/*.pdb
+nodegl/pynodegl-utils/build/*
