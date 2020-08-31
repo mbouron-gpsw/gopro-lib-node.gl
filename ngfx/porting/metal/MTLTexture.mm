@@ -60,8 +60,8 @@ void MTLTexture::upload(void* data, uint32_t size, uint32_t x, uint32_t y, uint3
     if (arrayLayers == -1) arrayLayers = this->arrayLayers;
     NSUInteger bytesPerRow = size / (h * d * arrayLayers);
     NSUInteger bytesPerImage;
-    if (textureType == MTLTextureType3D) bytesPerImage = size / d;
-    else if (textureType == MTLTextureTypeCube) bytesPerImage = size / arrayLayers;
+    if (MTLTextureType(textureType) == MTLTextureType3D) bytesPerImage = size / d;
+    else if (MTLTextureType(textureType) == MTLTextureTypeCube) bytesPerImage = size / arrayLayers;
     else bytesPerImage = 0;
     MTLRegion region = MTLRegionMake3D(x, y, z, w, h, d);
     uint8_t* srcData = (uint8_t*)data;

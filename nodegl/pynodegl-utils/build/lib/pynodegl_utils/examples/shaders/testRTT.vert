@@ -1,7 +1,8 @@
 #include "common.vert.h"
                                                         
 layout(location = 0) in vec3 ngl_position;                                                      
-layout(location = 1) in vec3 ngl_normal; 
+layout(location = 1) in vec2 ngl_uvcoord;                                                       
+layout(location = 2) in vec3 ngl_normal; 
 
 layout (std140, set = 0, binding = 0) uniform UBO_0 {
 	mat4 ngl_modelview_matrix;                                                
