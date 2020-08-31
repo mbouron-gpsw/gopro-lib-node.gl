@@ -11,7 +11,7 @@ void MTLTexture::create(MTLGraphicsContext *ctx, void* data, ::MTLPixelFormat fo
         bool genMipmaps, MTLSamplerDescriptor* samplerDescriptor, uint32_t numSamples) {
     this->ctx = ctx;
     this->w = w; this->h = h; this->d = d; this->arrayLayers = arrayLayers;
-    this->textureType = textureType;
+    this->textureType = ngfx::TextureType(textureType);
     this->format = PixelFormat(format);
     this->numSamples = numSamples;
     auto device = ctx->mtlDevice.v;
@@ -110,7 +110,7 @@ void MTLTexture::download(void* data, uint32_t size, uint32_t x, uint32_t y, uin
     [v getBytes:data bytesPerRow: bytesPerRow fromRegion: region mipmapLevel: 0];
 }
 
-Texture* Texture::create(GraphicsContext* ctx, void* data, PixelFormat format, uint32_t size,
+Texture* Texture::create(GraphicsContext* ctx, Graphics* graphics, void* data, PixelFormat format, uint32_t size,
          uint32_t w, uint32_t h, uint32_t d, uint32_t arrayLayers, ImageUsageFlags imageUsageFlags,
          TextureType textureType, bool genMipmaps, FilterMode minFilter, FilterMode magFilter, FilterMode mipFilter,
          uint32_t numSamples) {

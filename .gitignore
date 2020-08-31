@@ -1,7 +1,6 @@
 *.d
 *.exe
 *.o
-nodegl-env/
 sxplayer*
 *.gcda
 *.gcno
