@@ -5,5 +5,7 @@ export PATH=../../nodegl-env/bin:$PATH
 export PYSHELL=../../../cmake-build-debug/NodeGL/Debug/pyShell.app/Contents/MacOS/pyShell
 #export PYSHELL=python3
 export NGL_TEST=../../nodegl-env/bin/ngl-test
+export GRAPHICS_BACKEND=metal
+export TEMP=/tmp
 #export DEBUG=1
 #export DEBUG_ONSCREEN=1
