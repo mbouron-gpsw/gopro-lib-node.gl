@@ -1,4 +1,4 @@
-export PYTHONPATH=../../pynodegl:../../pynodegl-utils:../../../scripts
+export PYTHONPATH=../../pynodegl:../../pynodegl-utils:../../../scripts:/Library/Frameworks/Python.framework/Versions/3.7/lib/python3.7/site-packages
 export DYLD_FALLBACK_LIBRARY_PATH=../../../cmake-build-debug/ngfx/Debug:../../../cmake-build-debug/nodegl/Debug
 export DATA_PATH=../../../cmake-build-debug
 export PATH=../../nodegl-env/bin:$PATH

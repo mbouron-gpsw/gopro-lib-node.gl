@@ -28,6 +28,8 @@ void MTLTexture::create(MTLGraphicsContext *ctx, void* data, ::MTLPixelFormat fo
     textureDescriptor.usage = textureUsage;
     if (numSamples > 1 && textureType == ::MTLTextureType2D)
         textureDescriptor.textureType = ::MTLTextureType2DMultisample;
+    else if (numSamples > 1 && textureType == ::MTLTextureType2DArray)
+    textureDescriptor.textureType = ::MTLTextureType2DMultisampleArray;
     else textureDescriptor.textureType = textureType;
     mipLevels = genMipmaps ? floor(log2(float(glm::min(w, h)))) + 1 : 1;
     textureDescriptor.mipmapLevelCount =  mipLevels;
