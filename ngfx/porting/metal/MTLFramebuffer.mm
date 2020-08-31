@@ -17,17 +17,24 @@ Framebuffer* Framebuffer::create(Device* device, RenderPass* renderPass,
     MTLFramebuffer* mtlFramebuffer = new MTLFramebuffer();
     mtlFramebuffer->attachments = attachments;
     MTLFramebuffer::ColorAttachments colorAttachments;
-    MTLRenderPassColorAttachmentDescriptor* colorAttachment = nullptr;
     MTLRenderPassDepthAttachmentDescriptor* depthAttachment = nullptr;
     MTLRenderPassStencilAttachmentDescriptor* stencilAttachment = nullptr;
-    for (uint32_t j = 0; j<attachments.size(); j++) {
-        auto& attachment = attachments[j];
+    auto attachmentsIt = attachments.begin();
+    while (attachmentsIt != attachments.end()) {
+        auto& attachment = *attachmentsIt++;
         auto mtlTexture = mtl(attachment.texture);
         if (!mtlTexture->depthTexture && !mtlTexture->stencilTexture) {
-            if (!colorAttachment) colorAttachment = [MTLRenderPassColorAttachmentDescriptor new];
-            if (mtlTexture->numSamples > 1) colorAttachment.texture = mtlTexture->v;
-            else if (colorAttachment.texture) colorAttachment.resolveTexture = mtlTexture->v;
-            else colorAttachment.texture = mtlTexture->v;
+            MTLRenderPassColorAttachmentDescriptor* colorAttachment = [MTLRenderPassColorAttachmentDescriptor new];
+            if (mtlTexture->numSamples > 1) {
+                colorAttachment.texture = mtlTexture->v;
+                auto& resolveAttachment = *attachmentsIt++;
+                auto mtlResolveTexture = mtl(resolveAttachment.texture);
+                colorAttachment.resolveTexture = mtlResolveTexture->v;
+            }
+            else {
+                colorAttachment.texture = mtlTexture->v;
+            }
+            colorAttachments.emplace_back(std::move(colorAttachment));
             continue;
         }
         if (mtlTexture->depthTexture) {
@@ -42,7 +49,6 @@ Framebuffer* Framebuffer::create(Device* device, RenderPass* renderPass,
             else stencilAttachment.texture = mtlTexture->v;
         }
     }
-    colorAttachments.emplace_back(std::move(colorAttachment));
     mtlFramebuffer->create(w, h, colorAttachments, depthAttachment, stencilAttachment);
     return mtlFramebuffer;
 }

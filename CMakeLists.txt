@@ -32,13 +32,14 @@ endif()
 function(build_test name)
 file (GLOB_RECURSE TEST_SOURCE_FILES test/${name}/*.cpp test/${name}/*.h test/${name}/*.mm)
 if (GRAPHICS_BACKEND_METAL)
+MESSAGE(STATUS "test: ${name} app backend src: ${APP_BACKEND_SOURCE_FILES}")
 add_executable(${name} ${TEST_SOURCE_FILES} ${APP_BACKEND_SOURCE_FILES} ${NGFX_DIR}/porting/appkit/Main.storyboard)
-set(RESOURCE_FILES ngfx/porting/appkit/Info.plist ngfx/porting/appkit/Main.storyboard)
+set(RESOURCE_FILES ${NGFX_DIR}/porting/appkit/Info.plist ${NGFX_DIR}/porting/appkit/Main.storyboard)
 set_target_properties(${name} PROPERTIES
     MACOSX_BUNDLE TRUE
     MACOSX_FRAMEWORK_IDENTIFIER org.gopro.ngfx
     RESOURCE "${RESOURCE_FILES}"
-    MACOSX_BUNDLE_INFO_PLIST ngfx/porting/appkit/Info.plist
+    MACOSX_BUNDLE_INFO_PLIST ${NGFX_DIR}/porting/appkit/Info.plist
 )
 else()
 add_executable(${name} ${TEST_SOURCE_FILES})

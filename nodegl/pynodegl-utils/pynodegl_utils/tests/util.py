@@ -28,7 +28,6 @@ import os
 GRAPHICS_BACKEND=os.getenv("GRAPHICS_BACKEND")
 NGFX_DIR= os.path.abspath('../../..')
 TMP_DIR = os.getenv("TEMP")
-    
 
 def compile_program(vertex, fragment):
     vertexKey = hashlib.md5(bytes(vertex, 'utf-8')).hexdigest()
