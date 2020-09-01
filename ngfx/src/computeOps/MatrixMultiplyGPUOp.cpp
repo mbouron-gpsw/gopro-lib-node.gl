@@ -41,7 +41,7 @@ void MatrixMultiplyGPUOp::apply(CommandBuffer* commandBuffer, Graphics* graphics
     graphics->bindStorageBuffer(commandBuffer, bSrc0.get(), SSBO_SRC0, SHADER_STAGE_COMPUTE_BIT);
     graphics->bindStorageBuffer(commandBuffer, bSrc1.get(), SSBO_SRC1, SHADER_STAGE_COMPUTE_BIT);
     graphics->bindStorageBuffer(commandBuffer, bDst.get(), SSBO_DST, SHADER_STAGE_COMPUTE_BIT);
-    graphics->dispatch(commandBuffer, dst.w, dst.h, 1);
+    graphics->dispatch(commandBuffer, dst.w, dst.h, 1, 1, 1, 1);
 }
 
 void MatrixMultiplyGPUOp::update(MatrixParam src0, MatrixParam src1) {

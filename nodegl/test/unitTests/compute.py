@@ -84,7 +84,7 @@ def compute_particules(cfg):
     duration = ngl.UniformFloat(cfg.duration)
 
     program = ngl.ComputeProgram(compute_shader)
-    compute = ngl.Compute(nb_particules / ( local_size * local_size), 1, 1, program)
+    compute = ngl.Compute(nb_particules / ( local_size * local_size), 1, 1, local_size, local_size, 1, program)
     compute.update_uniforms(time=time, duration=duration)
     compute.update_blocks(ipositions_buffer=ipositions, opositions_buffer=opositions)
 
@@ -137,7 +137,9 @@ def compute_histogram(cfg, show_dbg_points=False):
             'histr':ngl.BufferUInt(hsize),
             'histg':ngl.BufferUInt(hsize),
             'histb':ngl.BufferUInt(hsize),
-            'max':ngl.UniformVec3()
+            'max_r':ngl.UniformInt(),
+            'max_g':ngl.UniformInt(),
+            'max_b':ngl.UniformInt()
         }
     )
 
@@ -151,9 +153,8 @@ def compute_histogram(cfg, show_dbg_points=False):
     clear_histogram_shader = _COMPUTE_HISTOGRAM_CLEAR
     clear_histogram_program = ngl.ComputeProgram(clear_histogram_shader)
     clear_histogram = ngl.Compute(
-        group_size,
-        1,
-        1,
+        group_size, 1, 1,
+        local_size, local_size, 1,
         clear_histogram_program,
         label='clear_histogram',
     )
@@ -163,9 +164,8 @@ def compute_histogram(cfg, show_dbg_points=False):
     exec_histogram_shader = _COMPUTE_HISTOGRAM_EXEC
     exec_histogram_program = ngl.ComputeProgram(exec_histogram_shader)
     exec_histogram = ngl.Compute(
-        group_size,
-        group_size,
-        1,
+        group_size, group_size, 1,
+        local_size, local_size, 1,
         exec_histogram_program,
         label='compute_histogram'
     )
@@ -227,7 +227,7 @@ def compute_animation(cfg):
     transform = ngl.UniformMat4(transform=rotate)
 
     program = ngl.ComputeProgram(compute_shader)
-    compute = ngl.Compute(nb_vertices / (local_size ** 2), 1, 1, program)
+    compute = ngl.Compute(nb_vertices / (local_size ** 2), 1, 1, local_size, local_size, 1, program)
     compute.update_uniforms(transform=transform)
     compute.update_blocks(input_block=input_block, output_block=output_block)
 

@@ -45,7 +45,8 @@ namespace ngfx {
         void bindComputePipeline(CommandBuffer* cmdBuffer, ComputePipeline* computePipeline) override;
         void bindGraphicsPipeline(CommandBuffer* cmdBuffer, GraphicsPipeline* graphicsPipeline) override;
         void bindTexture(CommandBuffer* commandBuffer, Texture* texture, uint32_t set) override;
-        void dispatch(CommandBuffer* cmdBuffer, uint32_t groupCountX, uint32_t groupCountY, uint32_t groupCountZ) override;
+        void dispatch(CommandBuffer* cmdBuffer, uint32_t groupCountX, uint32_t groupCountY, uint32_t groupCountZ,
+            uint32_t threadsPerGroupX, uint32_t threadsPerGroupY, uint32_t threadsPerGroupZ) override;
         void draw(CommandBuffer* cmdBuffer, uint32_t vertexCount, uint32_t instanceCount = 1, uint32_t firstVertex = 0, uint32_t firstInstance = 0) override;
         void drawIndexed(CommandBuffer* cmdBuffer, uint32_t indexCount, uint32_t instanceCount = 1, uint32_t firstIndex = 0, int32_t vertexOffset = 0, uint32_t firstInstance = 0) override;
         void setViewport(CommandBuffer* cmdBuffer, Rect2D rect) override;

@@ -53,7 +53,8 @@ namespace ngfx {
         virtual void draw(CommandBuffer* cmdBuffer, uint32_t vertexCount, uint32_t instanceCount = 1, uint32_t firstVertex = 0, uint32_t firstInstance = 0) = 0;
         virtual void drawIndexed(CommandBuffer* cmdBuffer, uint32_t indexCount, uint32_t instanceCount = 1, uint32_t firstIndex = 0, int32_t vertexOffset = 0, uint32_t firstInstance = 0) = 0;
 
-        virtual void dispatch(CommandBuffer* cmdBuffer, uint32_t groupCountX, uint32_t groupCountY, uint32_t groupCountZ) = 0;
+        virtual void dispatch(CommandBuffer* cmdBuffer, uint32_t groupCountX, uint32_t groupCountY, uint32_t groupCountZ,
+            uint32_t threadsPerGroupX, uint32_t threadsPerGroupY, uint32_t threadsPerGroupZ) = 0;
 
         virtual void setViewport(CommandBuffer* cmdBuffer, Rect2D rect) = 0;
         virtual void setScissor(CommandBuffer* cmdBuffer, Rect2D rect) = 0;

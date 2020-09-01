@@ -82,6 +82,7 @@
     PARAM_NODE_MAP(textures, Texture); PARAM_NODE_MAP(uniforms, Node); PARAM_NODE_MAP(blocks, Block); \
     PARAM_NODE_MAP(instanceAttributes, Buffer); PARAM(numInstances)
 #define ComputeParams PARAM(groupCountX); PARAM(groupCountY); PARAM(groupCountZ); \
+    PARAM(threadsPerGroupX); PARAM(threadsPerGroupY); PARAM(threadsPerGroupZ); \
     PARAM_NODE(program, ComputeProgram); \
     PARAM_NODE_MAP(textures, Texture); PARAM_NODE_MAP(uniforms, Node); PARAM_NODE_MAP(blocks, Block)
 #define RenderToTextureParams PARAM_NODE(child, Node); PARAM_NODE_VECTOR(outputTextures, Texture); \

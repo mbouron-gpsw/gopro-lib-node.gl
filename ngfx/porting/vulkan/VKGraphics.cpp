@@ -126,7 +126,8 @@ void VKGraphics::bindStorageBuffer(CommandBuffer* commandBuffer, Buffer* buffer,
     bindBufferFN0(commandBuffer, buffer, set, currentPipeline, &vk(buffer)->getSsboDescriptorSet(shaderStageFlags));
 }
 
-void VKGraphics::dispatch(CommandBuffer* commandBuffer, uint32_t groupCountX, uint32_t groupCountY, uint32_t groupCountZ) {
+void VKGraphics::dispatch(CommandBuffer* commandBuffer, uint32_t groupCountX, uint32_t groupCountY, uint32_t groupCountZ,
+		uint32_t threadsPerGroupX, uint32_t threadsPerGroupY, uint32_t threadsPerGroupZ) {
     VK_TRACE(vkCmdDispatch(vk(commandBuffer)->v, groupCountX, groupCountY, groupCountZ));
 }
 

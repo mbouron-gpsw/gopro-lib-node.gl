@@ -86,14 +86,21 @@ void MTLGraphics::bindGraphicsPipeline(CommandBuffer* cmdBuffer, GraphicsPipelin
     currentPipeline = graphicsPipeline;
 }
 void MTLGraphics::bindTexture(CommandBuffer* cmdBuffer, Texture* texture, uint32_t set) {
-    auto renderEncoder = (MTLRenderCommandEncoder*)currentCommandEncoder;
-    [renderEncoder->v setFragmentTexture: mtl(texture)->v atIndex: set];
-    [renderEncoder->v setFragmentSamplerState: mtl(texture)->mtlSamplerState atIndex: set];
+    if (MTLRenderCommandEncoder* renderEncoder = dynamic_cast<MTLRenderCommandEncoder*>(currentCommandEncoder)) {
+        [renderEncoder->v setFragmentTexture: mtl(texture)->v atIndex: set];
+        [renderEncoder->v setFragmentSamplerState: mtl(texture)->mtlSamplerState atIndex: set];
+    }
+    else if (MTLComputeCommandEncoder* computeEncoder = dynamic_cast<MTLComputeCommandEncoder*>(currentCommandEncoder)) {
+        [computeEncoder->v setTexture: mtl(texture)->v atIndex: set];
+        [computeEncoder->v setSamplerState: mtl(texture)->mtlSamplerState atIndex: set];
+    }
 }
 
-void MTLGraphics::dispatch(CommandBuffer* cmdBuffer, uint32_t groupCountX, uint32_t groupCountY, uint32_t groupCountZ) {
+void MTLGraphics::dispatch(CommandBuffer* cmdBuffer, uint32_t groupCountX, uint32_t groupCountY, uint32_t groupCountZ,
+       uint32_t threadsPerGroupX, uint32_t threadsPerGroupY, uint32_t threadsPerGroupZ) {
     auto computeEncoder = (MTLComputeCommandEncoder*)currentCommandEncoder;
-    [computeEncoder->v dispatchThreadgroups:MTLSizeMake(groupCountX, groupCountY, groupCountZ) threadsPerThreadgroup:MTLSizeMake(1,1,1)]; //TODO: pass as param
+    [computeEncoder->v dispatchThreadgroups:MTLSizeMake(groupCountX, groupCountY, groupCountZ)
+                      threadsPerThreadgroup:MTLSizeMake(threadsPerGroupX, threadsPerGroupY, threadsPerGroupZ)];
 }
 
 void MTLGraphics::draw(CommandBuffer* cmdBuffer, uint32_t vertexCount, uint32_t instanceCount, uint32_t firstVertex, uint32_t firstInstance) {

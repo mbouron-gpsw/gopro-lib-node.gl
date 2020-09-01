@@ -1067,11 +1067,14 @@ cdef class Circle(_Node):
 
 cdef class Compute(_Node):
 
-    def __init__(self, int nb_group_x, int nb_group_y, int nb_group_z, _Node program, textures=None, uniforms=None, blocks=None, *args, **kwargs):
+    def __init__(self, int nb_group_x, int nb_group_y, int nb_group_z, 
+			int threads_per_group_x, int threads_per_group_y, int threads_per_group_z,
+			_Node program, textures=None, uniforms=None, blocks=None, *args, **kwargs):
         assert program is not None
 
         assert self.ctx is NULL
-        self.ctx = ngl_node_create(NGL_NODE_COMPUTE, nb_group_x, nb_group_y, nb_group_z, program.ctx)
+        self.ctx = ngl_node_create(NGL_NODE_COMPUTE, nb_group_x, nb_group_y, nb_group_z, 
+			threads_per_group_x, threads_per_group_y, threads_per_group_z, program.ctx)
         if self.ctx is NULL:
             raise MemoryError()
         _Node._init_params(self, *args, **kwargs)

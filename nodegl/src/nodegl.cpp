@@ -814,8 +814,9 @@ struct ngl_node *ngl_node_create(int type, ...) {
     NODE_CREATE_FN1(TRANSFORM, Transform, ngl_transform_param_set, nullptr, node_arg<Node>(ap));
     NODE_CREATE_FN1(RENDER, Render, ngl_render_param_set, nullptr, node_arg<Geometry>(ap));
     NODE_CREATE_FN(COMPUTE, Compute, ngl_compute_param_set, nullptr,
-        auto p0 = int_arg(ap), p1 = int_arg(ap), p2 = int_arg(ap); auto p3 = node_arg<ComputeProgram>(ap);
-        node->v.reset(new NGL::Compute(p0, p1, p2, p3));
+        auto p0 = int_arg(ap), p1 = int_arg(ap), p2 = int_arg(ap), p3 = int_arg(ap), p4 = int_arg(ap), p5 = int_arg(ap);
+        auto p6 = node_arg<ComputeProgram>(ap);
+        node->v.reset(new NGL::Compute(p0, p1, p2, p3, p4, p5, p6));
     );
     NODE_CREATE_FN1(RENDERTOTEXTURE, RenderToTexture, ngl_rtt_param_set, ngl_rtt_param_add, node_arg<Node>(ap));
     NODE_CREATE_FN1(GRAPHICCONFIG, GraphicsConfig, ngl_graphics_config_param_set, nullptr, node_arg<Node>(ap));

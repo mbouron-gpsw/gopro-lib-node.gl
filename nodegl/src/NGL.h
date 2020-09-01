@@ -597,8 +597,12 @@ public:
 class Compute : public Node {
 public:
     Compute() {}
-    Compute(uint32_t groupCountX, uint32_t groupCountY, uint32_t groupCountZ, sp<ComputeProgram> program)
-        :groupCountX(groupCountX), groupCountY(groupCountY), groupCountZ(groupCountZ), program(program) {}
+    Compute(uint32_t groupCountX, uint32_t groupCountY, uint32_t groupCountZ,
+            uint32_t threadsPerGroupX, uint32_t threadsPerGroupY, uint32_t threadsPerGroupZ,
+            sp<ComputeProgram> program)
+        :groupCountX(groupCountX), groupCountY(groupCountY), groupCountZ(groupCountZ),
+         threadsPerGroupX(threadsPerGroupX), threadsPerGroupY(threadsPerGroupY), threadsPerGroupZ(threadsPerGroupZ),
+         program(program) {}
     virtual ~Compute() {}
     sp<NodeBackend> getBackend() override;
     void serialize(std::ostream &out) override;
@@ -623,7 +627,8 @@ public:
     map<string, sp<Node>> uniforms;
     map<string, sp<Block>> blocks;
     map<string, sp<Texture>> textures;
-    uint32_t groupCountX, groupCountY, groupCountZ;
+    uint32_t groupCountX = 0, groupCountY = 0, groupCountZ = 0,
+        threadsPerGroupX = 0, threadsPerGroupY = 0, threadsPerGroupZ = 0;
     sp<ComputeProgram> program;
 };
 

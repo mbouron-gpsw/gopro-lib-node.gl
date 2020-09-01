@@ -185,7 +185,8 @@ void D3DGraphics::endRenderPass(CommandBuffer* commandBuffer) {
     currentFramebuffer = nullptr;
 }
 
-void D3DGraphics::dispatch(CommandBuffer* commandBuffer, uint32_t groupCountX, uint32_t groupCountY, uint32_t groupCountZ) {
+void D3DGraphics::dispatch(CommandBuffer* commandBuffer, uint32_t groupCountX, uint32_t groupCountY, uint32_t groupCountZ,
+		uint32_t threadsPerGroupX, uint32_t threadsPerGroupY, uint32_t threadsPerGroupZ) {
     D3D_TRACE(d3d(commandBuffer)->v->Dispatch(groupCountX, groupCountY, groupCountZ));
 }
 

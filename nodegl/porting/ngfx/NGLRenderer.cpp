@@ -948,7 +948,7 @@ void ComputePriv::compute(CommandBuffer* commandBuffer, Graphics* graphics, Grap
         auto &bufferData = it.second;
         graphics->bindStorageBuffer(commandBuffer, bufferData.buffer.get(), bufferData.bufferInfo->set, bufferData.bufferInfo->shaderStages);
     }
-    graphics->dispatch(commandBuffer, p->groupCountX, p->groupCountY, p->groupCountZ);
+    graphics->dispatch(commandBuffer, p->groupCountX, p->groupCountY, p->groupCountZ, p->threadsPerGroupX, p->threadsPerGroupY, p->threadsPerGroupZ);
 }
 
 void ComputePriv::update() {
