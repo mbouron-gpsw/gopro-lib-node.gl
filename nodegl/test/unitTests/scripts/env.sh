@@ -1,1 +1,1 @@
-. scripts/env_macos.sh
+. scripts/env_win64.sh

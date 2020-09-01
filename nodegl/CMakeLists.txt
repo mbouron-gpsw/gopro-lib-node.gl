@@ -12,7 +12,12 @@ endif()
 
 file (GLOB_RECURSE NGL_ADAPTER_SOURCE_FILES src/* porting/${NGL_BACKEND}/*)
 include_directories(src porting/${NGL_BACKEND})
-add_library(NodeGL SHARED ${NGL_ADAPTER_SOURCE_FILES}) #STATIC
+if (${CMAKE_SYSTEM_NAME} MATCHES "Windows")
+	set(NODEGL_BUILD_TYPE STATIC)
+else()
+	set(NODEGL_BUILD_TYPE SHARED)
+endif()
+add_library(NodeGL ${NODEGL_BUILD_TYPE} ${NGL_ADAPTER_SOURCE_FILES})
 target_compile_definitions(NodeGL PUBLIC ${GRAPHICS_BACKEND_CFLAGS})
 target_compile_options(NodeGL PUBLIC -std=c++17)
 target_link_libraries(NodeGL PUBLIC ngfx ${GRAPHICS_BACKEND_LIBS})
