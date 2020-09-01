@@ -2,7 +2,7 @@
 import sys
 from shader_tools import *
 
-paths = ['data/shaders', 'nodegl/data/shaders', 'nodegl/pynodegl-utils/pynodegl_utils/examples/shaders']
+paths = ['ngfx/data/shaders', 'nodegl/data/shaders', 'nodegl/pynodegl-utils/pynodegl_utils/examples/shaders']
 extensions=['.vert', '.frag', '.comp']
 glslFiles = addFiles(paths, extensions)
 if len(sys.argv) == 2:

@@ -27,6 +27,7 @@
 #define LOG(fmt, ...) fprintf(stderr, fmt "\n", ##__VA_ARGS__)
 #define LOG_TRACE(fmt, ...) LOG("[%s][%s][%d] " fmt, __FILE__,__PRETTY_FUNCTION__,__LINE__, ##__VA_ARGS__)
 #define TODO(fmt, ...) LOG("[%s][%s][%d] TODO: " fmt, __FILE__, __FUNCTION__, __LINE__, ##__VA_ARGS__)
+#include <cstdint>
 struct DebugUtil {
 	static inline void Exit(uint32_t code) {
 		exit(code);

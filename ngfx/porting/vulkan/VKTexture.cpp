@@ -299,7 +299,8 @@ VKImageView* VKTexture::getImageView(VkImageViewType imageViewType, uint32_t mip
     return result;
 }
 
-Texture* Texture::create(GraphicsContext* ctx, void* data, PixelFormat format, uint32_t size, uint32_t w, uint32_t h, uint32_t d, uint32_t arrayLayers,
+Texture* Texture::create(GraphicsContext* ctx, Graphics* graphics, void* data, PixelFormat format, uint32_t size,
+         uint32_t w, uint32_t h, uint32_t d, uint32_t arrayLayers,
          ImageUsageFlags imageUsageFlags, TextureType textureType, bool genMipmaps, FilterMode minFilter, FilterMode magFilter, FilterMode mipFilter,
          uint32_t numSamples) {
     VKTexture* vkTexture = new VKTexture();
