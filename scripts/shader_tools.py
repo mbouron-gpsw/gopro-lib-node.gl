@@ -493,6 +493,17 @@ def compileShaders(files, defines, outDir, fmt = 'glsl'):
     elif fmt == 'msl': return compileShadersMSL(files, defines, outDir)
     elif fmt == 'hlsl': return compileShadersHLSL(files, defines, outDir)
 
+def applyPatches(patchFiles, outDir):
+    patch='patch.exe' if PLATFORM_WIN32 else 'patch'
+    for patchFile in patchFiles:
+        filename = os.path.basename(patchFile)[:-6]
+        print('filename: ',filename)
+        outFile = os.path.normpath(f"{outDir}/{filename}")
+        if os.path.exists(outFile):
+            print(f"applying patch: {patchFile}")
+            cmdStr = f"{patch} -N -u {outFile} -i {patchFile}"
+            cmd(cmdStr)
+            
 def addFiles(paths, extensions):
     files = []
     for path in paths:
