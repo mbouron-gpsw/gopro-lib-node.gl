@@ -338,23 +338,28 @@ def shape_triangles_mat4_attribute(cfg):
     cfg.aspect_ratio = (1, 1)
     p0, p1, p2 = equilateral_triangle_coords(1)
     geometry = ngl.Triangle(p0, p1, p2)
-    matrices = ngl.BufferMat4(data=array.array('f', [
-        1.0, 0.0, 0.0, 0.0,
-        0.0, 1.0, 0.0, 0.0,
-        0.0, 0.0, 1.0, 0.0,
-       -0.5, 0.0, 0.0, 1.0,
 
+    matrix_0 = ngl.BufferVec4(data=array.array('f', [
         1.0, 0.0, 0.0, 0.0,
-        0.0, 1.0, 0.0, 0.0,
-        0.0, 0.0, 1.0, 0.0,
-        0.5, 0.0, 0.0, 1.0,
+        1.0, 0.0, 0.0, 0.0
     ]))
-
+    matrix_1 = ngl.BufferVec4(data=array.array('f', [
+        0.0, 1.0, 0.0, 0.0,
+        0.0, 1.0, 0.0, 0.0
+    ]))
+    matrix_2 = ngl.BufferVec4(data=array.array('f', [
+        0.0, 0.0, 1.0, 0.0,
+        0.0, 0.0, 1.0, 0.0
+    ]))
+    matrix_3 = ngl.BufferVec4(data=array.array('f', [
+        -0.5, 0.0, 0.0, 1.0,
+        0.5, 0.0, 0.0, 1.0
+    ]))
     program = ngl.Program(
         vertex='trianglesMat4Attr.vert',
         fragment=cfg.get_frag('color'),
     )
     render = ngl.Render(geometry, program, nb_instances=2)
-    render.update_instance_attributes(matrix=matrices)
+    render.update_instance_attributes(matrix_0=matrix_0, matrix_1=matrix_1, matrix_2 = matrix_2, matrix_3 = matrix_3)
     render.update_uniforms(color=ngl.UniformVec4(value=COLORS['orange']))
     return render
