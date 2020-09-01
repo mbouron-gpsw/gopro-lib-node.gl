@@ -93,7 +93,7 @@ void MTLGraphics::bindTexture(CommandBuffer* cmdBuffer, Texture* texture, uint32
 
 void MTLGraphics::dispatch(CommandBuffer* cmdBuffer, uint32_t groupCountX, uint32_t groupCountY, uint32_t groupCountZ) {
     auto computeEncoder = (MTLComputeCommandEncoder*)currentCommandEncoder;
-    [computeEncoder->v dispatchThreadgroups:MTLSizeMake(groupCountX, groupCountY, groupCountZ) threadsPerThreadgroup:MTLSizeMake(1,1,1)];
+    [computeEncoder->v dispatchThreadgroups:MTLSizeMake(groupCountX, groupCountY, groupCountZ) threadsPerThreadgroup:MTLSizeMake(1,1,1)]; //TODO: pass as param
 }
 
 void MTLGraphics::draw(CommandBuffer* cmdBuffer, uint32_t vertexCount, uint32_t instanceCount, uint32_t firstVertex, uint32_t firstInstance) {

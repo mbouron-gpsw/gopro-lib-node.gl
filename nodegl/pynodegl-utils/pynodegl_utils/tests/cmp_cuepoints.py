@@ -67,7 +67,7 @@ class _CompareCuePoints(CompareSceneBase):
             if debug:
                 _MODE = "RGBA"
                 img = Image.frombuffer(_MODE, (width, height), capture_buffer, 'raw', _MODE, 0, 1)
-                filename = f"{TMP_DIR}\\ngfx_pynodegl_tests\\{debug_func}_{debug_index}.png"
+                filename = os.path.normpath(f"{TMP_DIR}/ngfx_pynodegl_tests/{debug_func}_{debug_index}.png")
                 print("writing to file: " + filename)
                 img.save(filename)
                 debug_index += 1

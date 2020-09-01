@@ -28,8 +28,8 @@ namespace ngfx {
     public:
         void create() {}
         virtual ~D3DGraphics() {}
-        void beginComputePass(CommandBuffer* commandBuffer) override { TODO(); }
-        void endComputePass(CommandBuffer* commandBuffer) override { TODO(); }
+        void beginComputePass(CommandBuffer* commandBuffer) override {}
+        void endComputePass(CommandBuffer* commandBuffer) override {}
         void beginRenderPass(CommandBuffer* commandBuffer, RenderPass* renderPass, Framebuffer* framebuffer,
             glm::vec4 clearColor = glm::vec4(0.0f), float clearDepth = 1.0f, uint32_t clearStencil = 0) override;
         void endRenderPass(CommandBuffer* commandBuffer) override;

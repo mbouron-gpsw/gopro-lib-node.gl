@@ -64,7 +64,9 @@ void NGLApplication::onRecordCommandBuffer(CommandBuffer* commandBuffer) {
     auto& ctx = graphicsContext;
     GraphicsState state;
 
+    graphics->beginComputePass(commandBuffer);
     scene->compute(commandBuffer, graphics.get(), state);
+    graphics->endComputePass(commandBuffer);
 
     state.rttPass = true;
     scene->draw(commandBuffer, graphics.get(), state);

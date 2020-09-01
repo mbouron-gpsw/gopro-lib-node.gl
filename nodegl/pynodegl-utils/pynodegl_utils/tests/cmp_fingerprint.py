@@ -83,7 +83,7 @@ class _CompareFingerprints(CompareSceneBase):
             # TODO: png output for debug?
             img = Image.frombuffer(_MODE, (width, height), capture_buffer, 'raw', _MODE, 0, 1)
             if debug:
-                filename = f"{TMP_DIR}\\ngfx_pynodegl_tests\\{debug_func}_{debug_index}.png"
+                filename = os.path.normpath(f"{TMP_DIR}/ngfx_pynodegl_tests/{debug_func}_{debug_index}.png")
                 print("writing to file: "+filename)
                 img.save(filename)
                 debug_index += 1
