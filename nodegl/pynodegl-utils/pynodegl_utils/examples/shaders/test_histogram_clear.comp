@@ -8,7 +8,7 @@ layout(std430, set = 0, binding = 0) buffer histogram {
     uint histr[H_SIZE];
     uint histg[H_SIZE];
     uint histb[H_SIZE];
-    uvec3 max;
+    uint max_r, max_g, max_b;
 };
 
 void main()
@@ -17,7 +17,7 @@ void main()
     atomicAnd(histr[i], 0U);
     atomicAnd(histg[i], 0U);
     atomicAnd(histb[i], 0U);
-    atomicAnd(max.r, 0U);
-    atomicAnd(max.g, 0U);
-    atomicAnd(max.b, 0U);
+    atomicAnd(max_r, 0U);
+    atomicAnd(max_g, 0U);
+    atomicAnd(max_b, 0U);
 }

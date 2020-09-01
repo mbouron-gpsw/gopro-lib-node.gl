@@ -9,7 +9,7 @@ layout (std430, set = 1, binding = 0) buffer histogram {
     uint histr[H_SIZE];
     uint histg[H_SIZE];
     uint histb[H_SIZE];
-    uvec3 max;
+    uint max_r, max_g, max_b;
 };
 
 void main()
@@ -24,8 +24,8 @@ void main()
         uint r = atomicAdd(histr[ucolor.r], 1U);
         uint g = atomicAdd(histg[ucolor.g], 1U);
         uint b = atomicAdd(histb[ucolor.b], 1U);
-        atomicMax(max.r, r);
-        atomicMax(max.g, g);
-        atomicMax(max.b, b);
+        atomicMax(max_r, r);
+        atomicMax(max_g, g);
+        atomicMax(max_b, b);
     }
 }
