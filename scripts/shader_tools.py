@@ -500,6 +500,13 @@ def addFiles(paths, extensions):
             files += glob.glob(f"{path}/*{ext}")
     return files
 
+def filterFiles(files, fileFilter):
+	filteredFiles = []
+	for file in files:
+		if fileFilter in file:
+			filteredFiles.append(file)
+	return filteredFiles
+	
 def generateShaderMapsGLSL(files, outDir):
     outFiles = []
     for file in files:
