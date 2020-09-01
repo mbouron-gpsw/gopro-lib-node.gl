@@ -21,7 +21,7 @@ def findIncludeFile(includeFilename, includePaths):
 
 def preprocess(dataPath, inFile):
     contents = ''
-    includePaths = ['ngfx/data/shaders', dataPath]
+    includePaths = ['ngfx/data/shaders', 'nodegl/data/shaders', dataPath]
     for line in inFile:
         matchInclude = re.search('#include "([^"]*)"', line)
         if matchInclude:

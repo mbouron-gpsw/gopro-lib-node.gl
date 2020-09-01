@@ -1,4 +1,4 @@
-#include "common.vert.h"
+#include "ngl_common.vert.h"
 precision highp float;    
 
 layout(location = 0) in vec3 ngl_position;                                                      
@@ -17,7 +17,7 @@ layout(location = 1) out vec3 var_normal;
 layout(location = 2) out vec2 var_tex0_coord;    
                                                   
 void main() {                                                                                 
-    setPos(ngl_projection_matrix * ngl_modelview_matrix * vec4(ngl_position, 1.0));    
+    setNglPos(ngl_projection_matrix * ngl_modelview_matrix * vec4(ngl_position, 1.0));    
     var_uvcoord = ngl_uvcoord;                                                    
     var_normal = mat3(ngl_normal_matrix) * ngl_normal;                                  
     var_tex0_coord = (ngl_tex0_coord_matrix * vec4(ngl_uvcoord, 0.0, 1.0)).xy;  

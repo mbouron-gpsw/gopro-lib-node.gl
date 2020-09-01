@@ -28,7 +28,7 @@ from pynodegl_utils.tests.debug import get_debug_points
 from shader_tools import *
 from pynodegl_utils.tests.util import *
 _FIELDS_VERT = '''\
-#include "common.vert.h"
+#include "ngl_common.vert.h"
 layout (location = 0) in vec3 ngl_position;
 layout (location = 1) in vec2 ngl_uvcoord;
 
@@ -41,7 +41,7 @@ layout (location = 0) out vec2 var_uvcoord;
 
 void main()
 {
-    setPos(ngl_projection_matrix * ngl_modelview_matrix * vec4(ngl_position, 1.0));
+    setNglPos(ngl_projection_matrix * ngl_modelview_matrix * vec4(ngl_position, 1.0));
     var_uvcoord = ngl_uvcoord;
 }
 '''
