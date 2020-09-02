@@ -47,8 +47,8 @@
 #define TimeRangeModeOnceParams TimeRangeModeParams; PARAM(renderTime)
 #define CircleParams PARAM(radius); PARAM(numPoints)
 #define BlockParams PARAM_NODE_MAP(fields, Node); PARAM_STR(layout)
-#define MediaParams PARAM_STR(filename); PARAM(width); PARAM(height)
-#define GroupParams PARAM_NODE_VECTOR(children, Node);
+#define MediaParams PARAM_STR(filename); PARAM(width); PARAM(height); PARAM(timeAnim); PARAM(maxNbPackets); PARAM(maxNbFrames); PARAM(maxNbSink)
+#define GroupParams PARAM_NODE_VECTOR(children, Node)
 
 #define AnimKeyFrameBufferParams PARAM(easingId); PARAM(t); PARAM_DATA(v)
 #define AnimatedBufferParams PARAM_NODE_VECTOR(kf, AnimKeyFrameBuffer);  PARAM(dataType); PARAM(stride)

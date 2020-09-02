@@ -127,6 +127,20 @@ void MediaPriv::init(GraphicsContext* ctx, Graphics* graphics, GraphicsState sta
     playerCtx = sxplayer_create(p->filename.c_str());
     if (!playerCtx) ERR("cannot create sxplayer context for file: %s", p->filename.c_str());
     sxplayer_set_log_callback(playerCtx, this, sxplayer_log_cb);
+    if (p->maxNbPackets) sxplayer_set_option(playerCtx, "max_nb_packets", p->maxNbPackets);
+    if (p->maxNbFrames)  sxplayer_set_option(playerCtx, "max_nb_frames",  p->maxNbFrames);
+    if (p->maxNbSink)    sxplayer_set_option(playerCtx, "max_nb_sink",    p->maxNbSink);
+    if (p->timeAnim) {
+        timeAnim = sp_cast<AnimatedNodePriv>(p->timeAnim->getBackend());
+        timeAnim->init(ctx, graphics, state);
+        double initialSeek = p->timeAnim->kf.front()->v;
+        LOG("initialSeek: %f", initialSeek);
+        sxplayer_set_option(playerCtx, "skip", initialSeek);
+        if (p->timeAnim->kf.size() > 1) {
+            double lastTime = p->timeAnim->kf.back()->v;
+            sxplayer_set_option(playerCtx, "trim_duration", lastTime - initialSeek);
+        }
+    }
     sxplayer_start(playerCtx);
     getFrame();
 }
@@ -138,7 +152,12 @@ void MediaPriv::getFrame() {
     frame->v = sxplayer_get_frame(playerCtx, time);
 }
 void MediaPriv::update() {
-    time = p->ctx->time;
+    if (p->timeAnim) {
+        timeAnim->update();
+        double initialSeek = p->timeAnim->kf.front()->v;
+        time = p->timeAnim->value - initialSeek;
+    }
+    else time = p->ctx->time;
     getFrame();
 }
 
@@ -444,7 +463,7 @@ void Texture2DPriv::init(GraphicsContext *ctx, Graphics* graphics, GraphicsState
         uint32_t w = frame->width, h = frame->height;
         auto pixFmt = sxplayerPixFormatMap.at(frame->pix_fmt);
         uint32_t size = w * h * 4;
-        v.reset(ngfx::Texture::create(ctx, graphics, nullptr, pixFmt, size, w, h, 1, 1,
+        v.reset(ngfx::Texture::create(ctx, graphics, frame->data, pixFmt, size, w, h, 1, 1,
                 ImageUsageFlags(p->usageFlags | IMAGE_USAGE_SAMPLED_BIT | IMAGE_USAGE_TRANSFER_SRC_BIT | IMAGE_USAGE_TRANSFER_DST_BIT)));
 #if 0
         v.reset(ngfx::Texture::create(ctx, graphics, media->filename.c_str(),
@@ -476,7 +495,7 @@ void Texture2DPriv::update() {
     if (auto media = sp_cast<Media>(p0->dataSrc)) {
         auto mediaDataSrc = sp_cast<MediaPriv>(dataSrc);
         auto& frame = mediaDataSrc->frame->v;
-        v->upload(frame->data, frame->linesize * frame->height);
+        if (frame) v->upload(frame->data, frame->linesize * frame->height);
     }
     else if (auto buffer = sp_cast<AnimatedBuffer>(p0->dataSrc)) {
         auto bufferData = buffer->value.get();

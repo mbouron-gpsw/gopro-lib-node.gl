@@ -353,6 +353,7 @@ namespace NGL {
         sxplayer_ctx* playerCtx = nullptr;
         std::unique_ptr<Frame> frame;
         double time = 0.0;
+        sp<AnimatedNodePriv> timeAnim;
     };
 
     struct TimeRangeFilterPriv : public NodePriv {

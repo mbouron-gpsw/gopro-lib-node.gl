@@ -256,7 +256,8 @@ DEFINE_ANIMKEYFRAME_PARAM_SET(buffer, Buffer, data, data_arg);
 
 static auto ngl_media_param_set = [](NGL::Node* node, const std::string key, va_list &ap) {
     NGL::Media* media = (NGL::Media*)node;
-    TODO("key: %s", key.c_str());
+    if (key == "time_anim") media->timeAnim = node_arg<AnimatedTime>(ap);
+    else TODO("key: %s", key.c_str());
 };
 
 const static std::map<std::string, NGL::Text::HAlign> textHAlignMap =  {

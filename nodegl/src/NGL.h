@@ -129,18 +129,6 @@ private:
     void init();
 };
 
-class Media : public Node {
-public:
-    Media() {}
-    Media(const string& filename): filename(filename) {}
-    virtual ~Media() {}
-    sp<NodeBackend> getBackend() override;
-    void serialize(std::ostream &out) override;
-    void deserialize(std::istream &in) override;
-    string filename;
-    uint32_t width = 0, height = 0;
-};
-
 class Text : public Node {
 public:
     Text(string str = ""): str(str) {}
@@ -385,6 +373,25 @@ DEFINE_ANIMATED_CLASS(Quat, quat, quat(1.0f, vec3(0.0f)), &value, sizeof(quat),
     glm::mat4 valueMat4 = glm::mat4(1.0f);
     bool asMat4 = false;
 );
+
+
+class Media : public Node {
+public:
+    Media() {}
+    Media(const string& filename): filename(filename) {}
+    virtual ~Media() {}
+    sp<NodeBackend> getBackend() override;
+    void serialize(std::ostream &out) override;
+    void deserialize(std::istream &in) override;
+    void setContext(Context* ctx) override {
+        this->ctx = ctx;
+        if (timeAnim) timeAnim->setContext(ctx);
+    }
+    string filename;
+    uint32_t width = 0, height = 0;
+    sp<AnimatedTime> timeAnim;
+    uint32_t maxNbPackets = 1, maxNbFrames = 1, maxNbSink = 1;
+};
 
 class Block;
 
@@ -963,5 +970,6 @@ struct AnimationUtil {
     static int solveEasing(EasingId easingId, double *args, int nb_args,
                          double *offsets, double v, double *t);
 };
+
 }
 
