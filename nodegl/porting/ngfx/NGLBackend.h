@@ -24,6 +24,7 @@
 #include "graphics/Graphics.h"
 #include "graphics/GraphicsContext.h"
 #include <set>
+#include <sxplayer.hpp>
 using namespace ngfx;
 using namespace std;
 
@@ -340,10 +341,18 @@ namespace NGL {
 
     struct MediaPriv : public NodePriv {
         MediaPriv(Media* p) : NodePriv(p), p(p) {}
-        virtual ~MediaPriv() {}
-        void init(GraphicsContext* ctx, Graphics* graphics, GraphicsState state) override {}
-        void update() override {}
+        virtual ~MediaPriv();
+        void init(GraphicsContext* ctx, Graphics* graphics, GraphicsState state) override;
+        void update() override;
+        struct Frame {
+            ~Frame() { if (v) { sxplayer_release_frame(v); v = nullptr; } }
+            sxplayer_frame *v = nullptr;
+        };
+        void getFrame();
         Media* p = nullptr;
+        sxplayer_ctx* playerCtx = nullptr;
+        std::unique_ptr<Frame> frame;
+        double time = 0.0;
     };
 
     struct TimeRangeFilterPriv : public NodePriv {

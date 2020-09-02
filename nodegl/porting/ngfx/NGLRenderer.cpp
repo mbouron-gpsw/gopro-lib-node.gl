@@ -115,6 +115,33 @@ static uint32_t getStride(sp<Node> node) {
     return 0;
 }
 
+static void sxplayer_log_cb(void *arg, int level, const char *filename, int ln,
+                                  const char *fn, const char *fmt, va_list vl) {
+    if (level < SXPLAYER_LOG_INFO) return;
+    char buf[512];
+    vsnprintf(buf, sizeof(buf), fmt, vl);
+    LOG("[SXPLAYER %s:%d %s] %s", filename, ln, fn, buf);
+}
+
+void MediaPriv::init(GraphicsContext* ctx, Graphics* graphics, GraphicsState state) {
+    playerCtx = sxplayer_create(p->filename.c_str());
+    if (!playerCtx) ERR("cannot create sxplayer context for file: %s", p->filename.c_str());
+    sxplayer_set_log_callback(playerCtx, this, sxplayer_log_cb);
+    sxplayer_start(playerCtx);
+    getFrame();
+}
+MediaPriv::~MediaPriv() {
+    sxplayer_free(&playerCtx);
+}
+void MediaPriv::getFrame() {
+    frame.reset(new Frame());
+    frame->v = sxplayer_get_frame(playerCtx, time);
+}
+void MediaPriv::update() {
+    time = p->ctx->time;
+    getFrame();
+}
+
 void GeometryPriv::init(GraphicsContext *ctx, Graphics* graphics, GraphicsState state) {
     if (!p->verts) ERR("verts is NULL");
     verts = sp_cast<NodePriv>(p->verts->getBackend());
@@ -401,14 +428,28 @@ static void updateTexture(void* data, uint32_t bpp, uint32_t w, uint32_t h, uint
     updateTextureFn(data);
 }
 
+static std::map<int, ngfx::PixelFormat> sxplayerPixFormatMap = {
+    { SXPLAYER_PIXFMT_RGBA, PIXELFORMAT_RGBA8_UNORM },
+    { SXPLAYER_PIXFMT_BGRA, PIXELFORMAT_BGRA8_UNORM }
+};
+
 void Texture2DPriv::init(GraphicsContext *ctx, Graphics* graphics, GraphicsState state) {
     if (v) return;
     this->ctx = ctx;
     if (p0->dataSrc) dataSrc = sp_cast<NodePriv>(p0->dataSrc->getBackend());
     if (dataSrc) dataSrc->init(ctx, graphics, state);
     if (auto media = sp_cast<Media>(p0->dataSrc)) {
+        auto mediaDataSrc = sp_cast<MediaPriv>(dataSrc);
+        auto& frame = mediaDataSrc->frame->v;
+        uint32_t w = frame->width, h = frame->height;
+        auto pixFmt = sxplayerPixFormatMap.at(frame->pix_fmt);
+        uint32_t size = w * h * 4;
+        v.reset(ngfx::Texture::create(ctx, graphics, nullptr, pixFmt, size, w, h, 1, 1,
+                ImageUsageFlags(p->usageFlags | IMAGE_USAGE_SAMPLED_BIT | IMAGE_USAGE_TRANSFER_SRC_BIT | IMAGE_USAGE_TRANSFER_DST_BIT)));
+#if 0
         v.reset(ngfx::Texture::create(ctx, graphics, media->filename.c_str(),
                 ImageUsageFlags(p->usageFlags | IMAGE_USAGE_SAMPLED_BIT | IMAGE_USAGE_TRANSFER_SRC_BIT | IMAGE_USAGE_TRANSFER_DST_BIT)));
+#endif
         media->width = p0->w;
         media->height = p0->h;
     } else if (auto buffer = sp_cast<Buffer>(p0->dataSrc)) {
@@ -432,7 +473,12 @@ void Texture2DPriv::init(GraphicsContext *ctx, Graphics* graphics, GraphicsState
 
 void Texture2DPriv::update() {
     if (dataSrc) dataSrc->update();
-    if (auto buffer = sp_cast<AnimatedBuffer>(p0->dataSrc)) {
+    if (auto media = sp_cast<Media>(p0->dataSrc)) {
+        auto mediaDataSrc = sp_cast<MediaPriv>(dataSrc);
+        auto& frame = mediaDataSrc->frame->v;
+        v->upload(frame->data, frame->linesize * frame->height);
+    }
+    else if (auto buffer = sp_cast<AnimatedBuffer>(p0->dataSrc)) {
         auto bufferData = buffer->value.get();
         updateTexture(bufferData->v, buffer->stride, p0->w, p0->h, 1, 1, buffer->dataType, v.get());
     }
@@ -892,7 +938,9 @@ void RenderPriv::draw(CommandBuffer* commandBuffer, Graphics* graphics, Graphics
         graphics->bindIndexBuffer(commandBuffer, geom->bIndices.get());
         graphics->drawIndexed(commandBuffer, geom->numIndices, p->numInstances);
     }
-    else graphics->draw(commandBuffer, geom->numVerts, p->numInstances);
+    else {
+        graphics->draw(commandBuffer, geom->numVerts, p->numInstances);
+    }
     if (gfxCfg && gfxCfg->scissorTest) {
         graphics->setScissor(commandBuffer, currentScissorRect);
     }

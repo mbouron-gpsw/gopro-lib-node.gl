@@ -26,6 +26,9 @@
 #endif
 using namespace ngfx;
 
+static void glfwOnError(int errorCode, const char * msg) {
+    LOG("[%d]: %s", errorCode, msg);
+}
 static void glfwOnKey(GLFWwindow* window, int key, int scancode, int action, int mods) {
     GLFWWindow* thiz = (GLFWWindow*)glfwGetWindowUserPointer(window);
     if (thiz->onKey) thiz->onKey(ngfx::KeyCode(key), InputAction(action));
@@ -52,7 +55,9 @@ void GLFWWindow::create(GraphicsContext* graphicsContext, const char* title,
     this->instance = vk(graphicsContext)->vkInstance.v;
     VkResult vkResult;
 #endif
-    glfwInit();
+    glfwSetErrorCallback(glfwOnError);
+    int result = glfwInit();
+    if (result != GLFW_TRUE) ERR("glfwInit failed");
 #ifdef GRAPHICS_BACKEND_VULKAN
     glfwWindowHint(GLFW_CLIENT_API, GLFW_NO_API);
 #endif

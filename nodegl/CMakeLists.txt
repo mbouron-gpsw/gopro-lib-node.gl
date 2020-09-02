@@ -17,10 +17,13 @@ if (${CMAKE_SYSTEM_NAME} MATCHES "Windows")
 else()
 	set(NODEGL_BUILD_TYPE SHARED)
 endif()
+
+set (SXPLAYER_LIBS sxplayer avformat avfilter avcodec avutil pthread)
+
 add_library(NodeGL ${NODEGL_BUILD_TYPE} ${NGL_ADAPTER_SOURCE_FILES})
 target_compile_definitions(NodeGL PUBLIC ${GRAPHICS_BACKEND_CFLAGS})
 target_compile_options(NodeGL PUBLIC -std=c++17)
-target_link_libraries(NodeGL PUBLIC ngfx ${GRAPHICS_BACKEND_LIBS})
+target_link_libraries(NodeGL PUBLIC ngfx ${GRAPHICS_BACKEND_LIBS} ${SXPLAYER_LIBS})
 
 link_directories(${PYTHON_LIB_PATH})
 
@@ -30,4 +33,4 @@ build_test(mediaPlayer)
 target_link_libraries(nglViewer NodeGL)
 target_include_directories(pyShell PUBLIC ${PYTHON_INCLUDE_PATH})
 target_link_libraries(pyShell NodeGL ${PYTHON_LIBS})
-target_link_libraries(mediaPlayer sxplayer avformat avfilter avcodec avutil pthread)
+target_link_libraries(mediaPlayer ${SXPLAYER_LIBS})
