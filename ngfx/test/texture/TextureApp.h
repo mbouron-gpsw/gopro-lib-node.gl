@@ -24,9 +24,9 @@
 #include <memory>
 
 namespace ngfx {
-    class TextureApp : public Application {
+    class MediaPlayerApp : public Application {
     public:
-        TextureApp();
+        MediaPlayerApp();
         virtual void onInit();
         virtual void onRecordCommandBuffer(CommandBuffer* commandBuffer);
     private:

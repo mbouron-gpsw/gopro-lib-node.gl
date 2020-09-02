@@ -26,6 +26,8 @@ link_directories(${PYTHON_LIB_PATH})
 
 build_test(nglViewer)
 build_test(pyShell)
+build_test(mediaPlayer)
 target_link_libraries(nglViewer NodeGL)
 target_include_directories(pyShell PUBLIC ${PYTHON_INCLUDE_PATH})
 target_link_libraries(pyShell NodeGL ${PYTHON_LIBS})
+target_link_libraries(mediaPlayer sxplayer avformat avfilter avcodec avutil pthread)

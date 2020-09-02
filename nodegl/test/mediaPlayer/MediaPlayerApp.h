@@ -18,28 +18,25 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-#include "TextureApp.h"
-#include "graphics/ShaderModule.h"
+#pragma once
+#include "Application.h"
+#include "drawOps/DrawTextureOp.h"
+#include "MediaPlayer.h"
+#include "Timer.h"
 #include <memory>
-using namespace ngfx;
-using namespace glm;
-using namespace std;
 
-MediaPlayerApp::MediaPlayerApp(): Application("Texture")  {}
-
-void MediaPlayerApp::onInit() {
-    texture.reset(Texture::create(graphicsContext.get(), graphics.get(), "GP0056_BACK.JPG"));
-    drawTextureOp.reset(new DrawTextureOp(graphicsContext.get(), texture.get()));
-}
-
-void MediaPlayerApp::onRecordCommandBuffer(CommandBuffer* commandBuffer) {
-    graphicsContext->beginRenderPass(commandBuffer, graphics.get());
-    drawTextureOp->draw(commandBuffer, graphics.get());
-    graphicsContext->endRenderPass(commandBuffer, graphics.get());
-}
-
-int main() {
-    MediaPlayerApp app;
-    app.run();
-    return 0;
+namespace ngfx {
+    class MediaPlayerApp : public Application {
+    public:
+        MediaPlayerApp();
+        virtual void onInit();
+        virtual void onRecordCommandBuffer(CommandBuffer* commandBuffer);
+        virtual void onUpdate();
+    private:
+        std::unique_ptr<DrawTextureOp> drawTextureOp;
+        std::unique_ptr<Texture> texture;
+        std::unique_ptr<MediaPlayer> mediaPlayer;
+        Timer timer;
+        double time = 0.0;
+    };
 }
