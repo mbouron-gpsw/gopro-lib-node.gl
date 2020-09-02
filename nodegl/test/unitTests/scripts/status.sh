@@ -3,7 +3,7 @@ printf "blending: "; bash scripts/run_blending.sh 2>&1 | grep passed | wc -l
 printf "compute: "; bash scripts/run_compute.sh 2>&1 | grep passed | wc -l
 printf "data: "; bash scripts/run_data.sh 2>&1 | grep passed | wc -l
 printf "live: "; bash scripts/run_live.sh 2>&1 | grep passed | wc -l
-#printf "media: "; bash scripts/run_media.sh 2>&1 | grep passed | wc -l
+printf "media: "; bash scripts/run_media.sh 2>&1 | grep passed | wc -l
 printf "rtt: "; bash scripts/run_rtt.sh 2>&1 | grep passed | wc -l
 printf "shape: "; bash scripts/run_shape.sh 2>&1 | grep passed | wc -l
 printf "text: "; bash scripts/run_text.sh 2>&1 | grep passed | wc -l
