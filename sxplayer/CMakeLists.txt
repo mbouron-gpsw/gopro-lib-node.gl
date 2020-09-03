@@ -10,8 +10,9 @@ list(FILTER SXPLAYER_SRC_FILES EXCLUDE REGEX ".*decoder_vt.c")
 endif()
 
 add_library(sxplayer ${SXPLAYER_SRC_FILES})
+if (${CMAKE_SYSTEM_NAME} MATCHES "Windows")
 include_directories(
 	../external/win64/include
 	../external/win64/include/pthread
 )
-
+endif()
