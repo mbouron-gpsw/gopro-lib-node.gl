@@ -1,7 +1,7 @@
 cmake_minimum_required(VERSION 3.10)
 project (nodegl)
 set (NGFX_DIR ${CMAKE_CURRENT_SOURCE_DIR}/ngfx)
-set (SXPLAYER_DIR ${CMAKE_CURRENT_SOURCE_DIR}/sxplayer)
+set (SXPLAYER_DIR ${CMAKE_CURRENT_SOURCE_DIR}/external/sxplayer)
 
 set (CMAKE_CXX_STANDARD 17)
 set(CMAKE_POSITION_INDEPENDENT_CODE ON)
@@ -52,6 +52,6 @@ endif()
 target_link_libraries(${name} ngfx)
 endfunction()
 
-add_subdirectory(sxplayer)
+add_subdirectory(external/sxplayer)
 add_subdirectory(ngfx)
 add_subdirectory(nodegl)
