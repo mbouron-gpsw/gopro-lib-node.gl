@@ -25,11 +25,10 @@ target_compile_definitions(NodeGL PUBLIC ${GRAPHICS_BACKEND_CFLAGS})
 target_compile_options(NodeGL PUBLIC -std=c++17)
 target_link_libraries(NodeGL PUBLIC ngfx ${GRAPHICS_BACKEND_LIBS} ${SXPLAYER_LIBS})
 if (${CMAKE_SYSTEM_NAME} MATCHES "Darwin")
-link_directories(/System/Library/Frameworks/CoreMedia.framework/Versions/A/)
 target_link_libraries(NodeGL PUBLIC
-    /System/Library/Frameworks/CoreMedia.framework/CoreMedia
-    /System/Library/Frameworks/CoreVideo.framework/CoreVideo
-    /System/Library/Frameworks/VideoToolbox.framework/VideoToolbox
+    "-framework CoreMedia"
+    "-framework CoreVideo"
+    "-framework VideoToolbox"
 )
 endif()
 link_directories(${PYTHON_LIB_PATH})
