@@ -18,7 +18,7 @@
 # specific language governing permissions and limitations
 # under the License.
 #
-
+import os
 import os.path as op
 import tempfile
 import platform
@@ -92,6 +92,9 @@ scene.File = StubControl
 scene.List = StubControl
 scene.Text = StubControl
 
+PLATFORM=os.getenv("PLATFORM")
+FFPROBE= 'ffprobe.exe' if PLATFORM == 'WIN32' else 'ffprobe'
+
 class Media:
 
     def __init__(self, filename):
@@ -99,7 +102,7 @@ class Media:
         self._set_media_dimensions()
 
     def _set_media_dimensions(self):
-        data = subprocess.check_output(['ffprobe', '-v', '0',
+        data = subprocess.check_output([f"{FFPROBE}", '-v', '0',
                                         '-select_streams', 'v:0',
                                         '-of', 'json',
                                         '-show_streams', '-show_format',

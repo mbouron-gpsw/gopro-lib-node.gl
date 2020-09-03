@@ -11,7 +11,7 @@ elseif (NGL_BACKEND_GL)
 endif()
 
 file (GLOB_RECURSE NGL_ADAPTER_SOURCE_FILES src/* porting/${NGL_BACKEND}/*)
-include_directories(src porting/${NGL_BACKEND})
+include_directories(src porting/${NGL_BACKEND} ${SXPLAYER_DIR})
 if (${CMAKE_SYSTEM_NAME} MATCHES "Windows")
 	set(NODEGL_BUILD_TYPE STATIC)
 else()
@@ -19,7 +19,6 @@ else()
 endif()
 
 set (SXPLAYER_LIBS sxplayer avformat avfilter avcodec avutil pthread)
-
 add_library(NodeGL ${NODEGL_BUILD_TYPE} ${NGL_ADAPTER_SOURCE_FILES})
 target_compile_definitions(NodeGL PUBLIC ${GRAPHICS_BACKEND_CFLAGS})
 target_compile_options(NodeGL PUBLIC -std=c++17)

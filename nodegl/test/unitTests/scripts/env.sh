@@ -1,1 +1,1 @@
-. scripts/env_linux.sh
+. scripts/env_win64.sh
