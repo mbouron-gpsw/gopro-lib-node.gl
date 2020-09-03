@@ -24,7 +24,9 @@
 #include "graphics/Graphics.h"
 #include "graphics/GraphicsContext.h"
 #include <set>
-#include <sxplayer.hpp>
+extern "C" {
+#include <sxplayer.h>
+}
 using namespace ngfx;
 using namespace std;
 
