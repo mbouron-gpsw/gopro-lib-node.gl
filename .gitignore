@@ -1,7 +1,6 @@
 *.d
 *.exe
 *.o
-sxplayer*
 *.gcda
 *.gcno
 ngl-cov/
