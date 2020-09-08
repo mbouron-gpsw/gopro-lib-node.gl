@@ -27,6 +27,7 @@
 #include "glincludes.h"
 #include "memory.h"
 #include "nodes.h"
+#include "log.h"
 
 static const GLenum gl_usage_map[NGLI_BUFFER_USAGE_NB] = {
     [NGLI_BUFFER_USAGE_STATIC]  = GL_STATIC_DRAW,
@@ -69,6 +70,21 @@ int ngli_buffer_gl_upload(struct buffer *s, const void *data, int size)
     ngli_glBindBuffer(gl, GL_ARRAY_BUFFER, s_priv->id);
     ngli_glBufferSubData(gl, GL_ARRAY_BUFFER, 0, size, data);
     return 0;
+}
+
+int ngli_buffer_gl_download(struct buffer* s, void* data, uint32_t size, uint32_t offset) {
+    LOG(ERROR, "not supported");
+	return NGL_ERROR_UNSUPPORTED;
+}
+
+int ngli_buffer_gl_map(struct buffer *s, int size, uint32_t offset, void** data)
+{
+	LOG(ERROR, "not supported");
+	return NGL_ERROR_UNSUPPORTED;
+}
+
+void ngli_buffer_gl_unmap(struct buffer* s) {
+    LOG(ERROR, "not supported");
 }
 
 void ngli_buffer_gl_freep(struct buffer **sp)

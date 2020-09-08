@@ -1,5 +1,5 @@
 /*
- * Copyright 2018 GoPro Inc.
+ * Copyright 2020 GoPro Inc.
  *
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
@@ -18,31 +18,19 @@
  * specific language governing permissions and limitations
  * under the License.
  */
+#include "swapchain.h"
+#include "gctx.h"
 
-#ifndef BUFFER_H
-#define BUFFER_H
-#include <stdint.h>
+int ngli_swapchain_create(struct gctx *gctx) {
+    return gctx->class->swapchain_create(gctx);
+}
 
-struct gctx;
+void ngli_swapchain_destroy(struct gctx *gctx) {
+    gctx->class->swapchain_destroy(gctx);
+}
 
-enum {
-    NGLI_BUFFER_USAGE_STATIC,
-    NGLI_BUFFER_USAGE_DYNAMIC,
-    NGLI_BUFFER_USAGE_NB
-};
+int ngli_swapchain_acquire_image(struct gctx *gctx, uint32_t *image_index) {
+    return gctx->class->swapchain_acquire_image(gctx, image_index);
+}
 
-struct buffer {
-    struct gctx *gctx;
-    int size;
-    int usage;
-};
 
-struct buffer *ngli_buffer_create(struct gctx *gctx);
-int ngli_buffer_init(struct buffer *s, int size, int usage);
-int ngli_buffer_upload(struct buffer *s, const void *data, int size);
-int ngli_buffer_download(struct buffer* s, void* data, uint32_t size, uint32_t offset);
-int ngli_buffer_map(struct buffer *s, int size, uint32_t offset, void** data);
-void ngli_buffer_unmap(struct buffer* s);
-void ngli_buffer_freep(struct buffer **sp);
-
-#endif

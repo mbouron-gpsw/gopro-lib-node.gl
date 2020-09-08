@@ -1,5 +1,5 @@
 /*
- * Copyright 2018 GoPro Inc.
+ * Copyright 2019 GoPro Inc.
  *
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
@@ -19,30 +19,10 @@
  * under the License.
  */
 
-#ifndef BUFFER_H
-#define BUFFER_H
-#include <stdint.h>
+#ifndef UTIL_VK_H
+#define UTIL_VK_H
+#include <vulkan/vulkan.h>
 
-struct gctx;
-
-enum {
-    NGLI_BUFFER_USAGE_STATIC,
-    NGLI_BUFFER_USAGE_DYNAMIC,
-    NGLI_BUFFER_USAGE_NB
-};
-
-struct buffer {
-    struct gctx *gctx;
-    int size;
-    int usage;
-};
-
-struct buffer *ngli_buffer_create(struct gctx *gctx);
-int ngli_buffer_init(struct buffer *s, int size, int usage);
-int ngli_buffer_upload(struct buffer *s, const void *data, int size);
-int ngli_buffer_download(struct buffer* s, void* data, uint32_t size, uint32_t offset);
-int ngli_buffer_map(struct buffer *s, int size, uint32_t offset, void** data);
-void ngli_buffer_unmap(struct buffer* s);
-void ngli_buffer_freep(struct buffer **sp);
+const char *vk_res2str(VkResult res);
 
 #endif
