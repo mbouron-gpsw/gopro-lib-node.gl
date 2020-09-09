@@ -90,4 +90,10 @@ void ngli_pass_uninit(struct pass *s);
 int ngli_pass_update(struct pass *s, double t);
 int ngli_pass_exec(struct pass *s);
 
+int pass_init(struct pass *s, struct ngl_ctx *ctx, const struct pass_params *params);
+int pass_prepare(struct pass *s);
+void pass_uninit(struct pass *s);
+int pass_update(struct pass *s, double t);
+int pass_exec(struct pass *s);
+
 #endif

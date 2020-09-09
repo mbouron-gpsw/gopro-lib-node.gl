@@ -70,7 +70,6 @@ static VKAPI_ATTR VkBool32 VKAPI_CALL debug_callback(VkDebugUtilsMessageSeverity
     default:
         break;
     }
-
     ngli_log_print(level, __FILE__, __LINE__, "debug_callback", "%s: %s", msg_type, callback_data->pMessage);
     return VK_FALSE;
 }

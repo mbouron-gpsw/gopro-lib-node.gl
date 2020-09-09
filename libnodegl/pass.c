@@ -438,7 +438,7 @@ static int pass_compute_init(struct pass *s)
     return 0;
 }
 
-int ngli_pass_prepare(struct pass *s)
+int pass_prepare(struct pass *s)
 {
     struct ngl_ctx *ctx = s->ctx;
     struct gctx *gctx = ctx->gctx;
@@ -525,7 +525,7 @@ int ngli_pass_prepare(struct pass *s)
     return 0;
 }
 
-int ngli_pass_init(struct pass *s, struct ngl_ctx *ctx, const struct pass_params *params)
+int pass_init(struct pass *s, struct ngl_ctx *ctx, const struct pass_params *params)
 {
     s->ctx = ctx;
     s->params = *params;
@@ -579,7 +579,7 @@ static void reset_##name##_nodes(struct darray *p) \
 DECLARE_RESET_NODES_FUNC(block, NODE_TYPE_BLOCK)
 DECLARE_RESET_NODES_FUNC(buffer, NODE_TYPE_BUFFER)
 
-void ngli_pass_uninit(struct pass *s)
+void pass_uninit(struct pass *s)
 {
     if (!s->ctx)
         return;
@@ -641,7 +641,7 @@ DECLARE_UPDATE_NODES_FUNC(common, NODE_TYPE_DEFAULT)
 DECLARE_UPDATE_NODES_FUNC(block, NODE_TYPE_BLOCK)
 DECLARE_UPDATE_NODES_FUNC(buffer, NODE_TYPE_BUFFER)
 
-int ngli_pass_update(struct pass *s, double t)
+int pass_update(struct pass *s, double t)
 {
     int ret;
     if ((ret = update_common_nodes(&s->uniform_nodes, t)) < 0 ||
@@ -653,7 +653,7 @@ int ngli_pass_update(struct pass *s, double t)
     return 0;
 }
 
-int ngli_pass_exec(struct pass *s)
+int pass_exec(struct pass *s)
 {
     struct ngl_ctx *ctx = s->ctx;
     const struct pass_params *params = &s->params;
@@ -731,4 +731,25 @@ int ngli_pass_exec(struct pass *s)
         ngli_pipeline_dispatch(pipeline, params->nb_group_x, params->nb_group_y, params->nb_group_z);
 
     return 0;
+}
+
+int ngli_pass_init(struct pass *s, struct ngl_ctx *ctx, const struct pass_params *params)
+{
+    return s->ctx->gctx->class->pass_init(s, ctx, params);
+}
+int ngli_pass_prepare(struct pass *s)
+{
+    return s->ctx->gctx->class->pass_prepare(s);
+}
+void ngli_pass_uninit(struct pass *s)
+{
+    s->ctx->gctx->class->pass_uninit(s);
+}
+int ngli_pass_update(struct pass *s, double t)
+{
+    return s->ctx->gctx->class->pass_update(s);
+}
+int ngli_pass_exec(struct pass *s)
+{
+    return s->ctx->gctx->class->pass_exec(s);
 }

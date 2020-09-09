@@ -282,6 +282,7 @@ static void set_textures(struct pipeline *s, struct glcontext *gl)
 
 static void set_buffers(struct pipeline *s, struct glcontext *gl)
 {
+#if 0 //TODO
     const struct buffer_desc *descs = ngli_darray_data(&s->buffer_descs);
     for (int i = 0; i < ngli_darray_count(&s->buffer_descs); i++) {
         const struct buffer_desc *desc = &descs[i];
@@ -290,10 +291,12 @@ static void set_buffers(struct pipeline *s, struct glcontext *gl)
         const struct buffer_gl *buffer_gl = (const struct buffer_gl *)buffer;
         ngli_glBindBufferBase(gl, desc->type, pipeline_buffer->binding, buffer_gl->id);
     }
+#endif
 }
 
 static int build_buffer_descs(struct pipeline *s, const struct pipeline_params *params)
 {
+#if 0 //TODO
     for (int i = 0; i < params->nb_buffers; i++) {
         const struct pipeline_buffer *pipeline_buffer = &params->buffers[i];
         const struct buffer *buffer = pipeline_buffer->buffer;
@@ -317,6 +320,7 @@ static int build_buffer_descs(struct pipeline *s, const struct pipeline_params *
     }
 
     return 0;
+#endif
 }
 
 static void set_vertex_attribs(const struct pipeline *s, struct glcontext *gl)

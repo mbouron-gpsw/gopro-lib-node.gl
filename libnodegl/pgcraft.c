@@ -422,7 +422,9 @@ static int inject_block(struct pgcraft *s, struct bstr *b,
         .type    = block->type,
         .binding = -1,
         .stage   = stage,
+#if 0 //TODO
         .buffer  = named_block->buffer,
+#endif
     };
     int len = snprintf(pl_buffer.name, sizeof(pl_buffer.name), "%s_block", named_block->name);
     if (len >= sizeof(pl_buffer.name)) {

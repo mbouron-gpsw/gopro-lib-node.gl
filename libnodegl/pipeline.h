@@ -53,7 +53,9 @@ struct pipeline_buffer {
     int type;
     int binding;
     int stage;
+#if 0 //TODO
     struct buffer *buffer;
+#endif
 };
 
 struct pipeline_attribute {
